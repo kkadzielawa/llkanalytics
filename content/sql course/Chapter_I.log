@@ -1,0 +1,28 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 22.7) (preloaded format=latex 2023.3.4)  4 MAR 2023 15:15
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**\makeatletter\def\HCode{\futurelet\HCode\HChar}\def\HChar{\ifx\HCode\def\HCod
+e##1{\Link##1}\expandafter\HCode\else\expandafter\Link\fi}\def\Link#1.a.b.c.{\A
+ddToHook{class/before}{\RequirePackage[#1,html]{tex4ht}}\let\HCode\documentstyl
+e\def\documentstyle{\let\documentstyle\HCode\expandafter\def\csname tex4ht\endc
+sname{#1,html}\def\HCode####1{\documentstyle[tex4ht,}\@ifnextchar[{\HCode}{\doc
+umentstyle[tex4ht]}}}\makeatother\HCode xhtml,Chapter1,charset=utf-8,html5.a.b.
+c.\input \detokenize{Chapter I.tex} > nul 2>&1
+! Emergency stop.
+<inserted text> Chapter 
+                        I.tex
+<*> ...ml5.a.b.c.\input \detokenize{Chapter I.tex}
+                                                   > nul 2>&1
+*** (job aborted, file error in nonstop mode)
+
+ 
+Here is how much of TeX's memory you used:
+ 18 strings out of 478339
+ 336 string characters out of 2834839
+ 297716 words of memory out of 3000000
+ 18552 multiletter control sequences out of 15000+600000
+ 469259 words of font info for 28 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 12i,0n,19p,553b,10s stack positions out of 10000i,1000n,20000p,200000b,80000s
+No pages of output.

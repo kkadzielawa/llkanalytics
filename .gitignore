@@ -1,0 +1,23 @@
+# OS generated files #
+######################
+._*
+__pycache__/
+
+# ALL ENV FILES #
+#################
+**/.env
+
+#ALL .VENV #
+############
+**/.venv/
+
+
+#KAGGLE DATA#
+#############
+data/
+
+
+#JUPYTER#
+#########
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
