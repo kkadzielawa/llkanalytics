@@ -20,8 +20,10 @@ from django.conf.urls.static import static
 from django.views.generic import TemplateView
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('', include('pages.urls', namespace='pages')),
     path('admin/', admin.site.urls),
     path('blog/', include('blog.urls', namespace='blog')),
+    #path('contact/', include('contact.urls', namespace='contact')),
     path('ckeditor', include('ckeditor_uploader.urls')),
+    
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

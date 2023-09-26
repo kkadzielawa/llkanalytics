@@ -10,16 +10,16 @@
   <body>
     <div class="container">
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-          <a class="navbar-brand" href="#">LLKAnalytics</a>
+          <a class="navbar-brand" href="{% url 'pages:home' %}">LLKAnalytics</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarToggler">
               <div class="navbar-nav">
-                  <a class="nav-item nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                  <a class="nav-item nav-link" href="#">About</a>
+                  <a class="nav-item nav-link" href="{% url 'pages:home' %}">Home <span class="sr-only">(current)</span></a>
                   <a class="nav-item nav-link" href="{% url 'blog:post_list' %}">Blog</a>
-                  <a class="nav-item nav-link " href="#">Services</a>
+                  <a class="nav-item nav-link" href="#">Videos</a>
+                  <a class="nav-item nav-link " href="{% url 'pages:services' %}">Services</a>
                   <a class="nav-item nav-link " href="#">Contact</a>
               </div>
           </div>
