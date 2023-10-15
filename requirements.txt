@@ -38,7 +38,7 @@ Pygments==2.14.0
 PyNaCl==1.4.0
 pyrsistent==0.17.3
 python-dotenv==0.15.0
-pywin32==227
+pywin32==227;platform_system == "Windows"
 PyYAML==5.4.1
 requests==2.25.1
 six==1.15.0
