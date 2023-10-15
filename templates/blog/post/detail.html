@@ -7,9 +7,13 @@
     src="https://cdn.jsdelivr.net/npm/mathjax@3.0.0/es5/tex-mml-chtml.js"
   ></script>
 {% endblock extrascripts %}
+  <div class="container-fluid p-4">
+    <a href="{% url 'blog:post_list' %}" class="btn btn-outline-secondary">Back to Blog</a>
 
-  <a href="{% url 'blog:post_list' %}">Home</a>
-
-  <h1>{{ post.title }}</h1>
-  <p class="date">Published {{ post.publish }} by {{ post.author }}</p>
-  {{ post.body|safe|linebreaks }} {% endblock %}
+    <h1 class="py-2 text-success">{{ post.title }}</h1>
+    <p class="date">Published {{ post.publish }} by {{ post.author }}</p>
+    
+      {{ post.body|safe|linebreaks }} {% endblock %}
+  </div>
+  
+  
