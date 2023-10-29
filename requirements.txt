@@ -4,6 +4,7 @@ attrs==20.3.0
 autopep8==1.5.4
 backports.zoneinfo==0.2.1
 bcrypt==3.2.0
+beautifulsoup4==4.12.2
 cached-property==1.5.2
 certifi==2020.12.5
 cffi==1.14.4
@@ -12,7 +13,9 @@ colorama==0.4.4
 cryptography==3.3.1
 distlib==0.3.1
 distro==1.5.0
+dj-database-url==2.1.0
 Django==4.1.7
+django-bootstrap-v5==1.0.11
 django-ckeditor==6.5.1
 django-js-asset==2.0.0
 django-tinymce==3.5.0
@@ -22,12 +25,15 @@ docker-compose==1.28.2
 dockerpty==0.4.1
 docopt==0.6.2
 filelock==3.0.12
+gunicorn==21.2.0
 idna==2.10
 jsonschema==3.2.0
 memory-profiler==0.58.0
+packaging==23.2
 paramiko==2.7.2
 pipenv==2020.11.15
 psutil==5.8.0
+psycopg2-binary==2.9.9
 pycodestyle==2.6.0
 pycparser==2.20
 Pygments==2.14.0
@@ -38,9 +44,11 @@ pywin32==227
 PyYAML==5.4.1
 requests==2.25.1
 six==1.15.0
+soupsieve==2.5
 sqlparse==0.4.3
 texttable==1.6.3
 toml==0.10.2
+typing-extensions==4.8.0
 tzdata==2022.7
 urllib3==1.26.3
 virtualenv==20.2.2
