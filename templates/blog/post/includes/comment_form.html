@@ -1,0 +1,12 @@
+
+{% load bootstrap5 %}
+
+
+<div class="d-flex flex-column flex-md-row justify-content-evenly align-items-center py-3">
+<h2>Add a new comment</h2>
+<form action="{% url "blog:post_comment" post.id %}" method="post">
+{% bootstrap_form form %}
+{% csrf_token %}
+<p><input type="submit" value="Add comment" class="btn btn-outline-success"></p>
+</form>
+</div>
