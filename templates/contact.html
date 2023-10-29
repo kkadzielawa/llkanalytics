@@ -1,0 +1,27 @@
+{% extends "base.html" %} 
+{% load bootstrap5 %}
+
+{% block content %}
+
+
+
+
+
+
+{% if sent %}
+<h1>E-mail successfully sent</h1>
+{% else %}
+<div class="d-flex flex-column flex-md-row justify-content-evenly align-items-center py-3">
+<h2>Contact Me</h2>
+<form method="post">
+{% csrf_token %}
+{% bootstrap_form form %}
+
+<input type="submit" class="btn btn-outline-success" value="Send">
+
+</form>
+{% endif %}
+
+</div>
+
+{% endblock %}
