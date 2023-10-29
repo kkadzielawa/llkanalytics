@@ -17,7 +17,27 @@
     <h1 class="py-2 text-success">{{ post.title }}</h1>
     <p class="date">Published {{ post.publish }} by {{ post.author }}</p>
     
-      {{ post.body|safe|linebreaks }} {% endblock %}
+      {{ post.body|safe|linebreaks }} 
+      
+      {% with comments.count as total_comments %}
+      <h2>
+      {{ total_comments }} comment{{ total_comments|pluralize }}
+      </h2>
+      {% endwith %}
+      {% for comment in comments %}
+      <div class="comment card" style="margin: auto;">
+      <p class="info card-header">Comment {{ forloop.counter }} by {{ comment.name }} {{ comment.created }}</p>
+      <div class="card-body">
+      <p class="card-text">
+      {{ comment.body|linebreaks }}
+      </p>
+    </div>
+      </div>
+      {% empty %}
+      <p>There are no comments.</p>
+      {% endfor %}
+    </div>
+      {% include "blog/post/includes/comment_form.html" %}
+      {% endblock %}
   </div>
-  
   
