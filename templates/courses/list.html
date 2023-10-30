@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load bootstrap5 %}
+{% load static %}
+
+
+{% block title %}
+{% if category %}{{ category.name }}{% else %}Courses{% endif %}
+{% endblock %}
+{% block content %}
+<div id="sidebar">
+<h3>Categories</h3>
+<ul class="list-group">
+
+<li {% if not category %} {% endif %}>
+<a href="{% url "courses:course_list" %}">All</a>
+</li> 
+{% for c in categories %}
+<li {% if category.slug == c.slug %}class="selected"
+{% endif %}>
+<a href="{{c.get_absolute_url}}">{{ c.name }}</a> 
+</li>
+{% endfor %} 
+</ul>
+
+</div>
+ <div id="main" class="course-list">
+<h1>{% if category %}{{ category.name }}{% else %}Courses
+{% endif %}</h1>
+{% for course in courses %}
+{{course}}
+<div class="item">
+<a href="{{ course.get_absolute_url }}">
+<img style="width: 100px; height: 100px;" src="{% if course.image %}{{ course.image.url }}{% else %}{%
+static "img/no_image.png" %}{% endif %}">
+</a>
+<br>
+<a href="{{ course.get_absolute_url }}">{{ course.name }}</a>
+<br>
+${{ course.price }}
+</div>
+{% endfor %}
+</div> 
+{% endblock %}
