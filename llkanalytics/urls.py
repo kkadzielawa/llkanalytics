@@ -19,12 +19,21 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
 
+from django.contrib.sitemaps.views import sitemap
+from blog.sitemaps import PostSitemap
+
+sitemaps = {"posts": PostSitemap}
+
 urlpatterns = [
-    path('', include('pages.urls', namespace='pages')),
-    path('admin/', admin.site.urls),
-    path('blog/', include('blog.urls', namespace='blog')),
-    path('courses/', include('courses.urls', namespace='courses')),
-    path('contact/', include('pages.urls', namespace='pages')),
-    path('ckeditor', include('ckeditor_uploader.urls')),
-    
-] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+    path("", include("pages.urls", namespace="pages")),
+    path("admin/", admin.site.urls),
+    path("blog/", include("blog.urls", namespace="blog")),
+    path("courses/", include("courses.urls", namespace="courses")),
+    path("ckeditor", include("ckeditor_uploader.urls")),
+    path(
+        "sitemap.xml",
+        sitemap,
+        {"sitemaps": sitemaps},
+        name="django.contrib.sitemaps.views.sitemap",
+    ),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
