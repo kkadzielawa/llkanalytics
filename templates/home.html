@@ -1,6 +1,25 @@
 {% extends "base.html" %} 
 
+{% load static %}
+
+{% load bootstrap5 %}
+
 {% block content %}
 
-<h1>Hello from Home HTML</h1>
+<div class="container-fluid">
+    <div class="row justify-content-lg-between align-items-center">
+        <div id="personal-photo-div" class="col-md p-4 text-align-center">
+            <img src="{% static 'img/personal_photo.png' %}" alt="" srcset="">
+        </div>
+        <div class="col-md p-4">
+            <p class="">
+                Hi! My name is Konrad Kadzielawa and I am a Chicago-based data analytics professional. <br>
+                I have been involved in a variety of analytics-related professions ever since I started professional work. <br>
+                This site is centered on the blog section where I intend to regularly post information relevant to analytics/data science and how it can impact your business. <br>
+                I also offer services related to analytics - more available in the Services section of this website. Lastly, please click on the contact section to contact me with relevant inquiries. <br><br>
+                Thank you!
+            </p>
+        </div>
+    </div>
+</div>
 {% endblock %}
