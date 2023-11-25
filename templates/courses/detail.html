@@ -25,4 +25,9 @@
 <p class="price">${{ course.price }}</p>
 {{ course.description|linebreaks }}
 </div>
+<form action="{% url "cart:cart_add" course.id %}" method="post">
+    {{ cart_course_form }}
+    {% csrf_token %}
+    <input type="submit" value="Add to cart">
+</form>
 {% endblock %}

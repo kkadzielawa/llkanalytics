@@ -27,6 +27,7 @@ sitemaps = {"posts": PostSitemap}
 urlpatterns = [
     path("", include("pages.urls", namespace="pages")),
     path("admin/", admin.site.urls),
+    path("cart/", include("cart.urls", namespace="cart")),
     path("blog/", include("blog.urls", namespace="blog")),
     path("courses/", include("courses.urls", namespace="courses")),
     path("ckeditor", include("ckeditor_uploader.urls")),

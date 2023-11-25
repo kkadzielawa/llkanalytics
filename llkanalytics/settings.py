@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "blog.apps.BlogConfig",
     "courses.apps.CoursesConfig",
     "pages.apps.PagesConfig",
+    "cart.apps.CartConfig",
 ]
 
 CKEDITOR_UPLOAD_PATH = "uploads/"
@@ -141,3 +142,5 @@ MEDIA_ROOT = "media/"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+CART_SESSION_ID = "cart"
