@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load bootstrap5 %}
+{% load static %}
+
+
+
+{% block title %}
+{{ course.name }}
+{% endblock %}
+
+{% block content %}
+<div class="course-detail">
+<a href="{% url 'courses:course_list' %}">Courses</a>
+</br>
+<a href="{{ course.category.get_absolute_url }}">{{ course.category }}</a>
+</br>
+<img style="width: 100px; height: 100px;" src="{% if course.image %}{{ course.image.url }}{% else %}
+{% static "img/no_image.png" %}{% endif %}">
+<h1>{{ course.name }}</h1>
+<h2>
+
+{{ course.category }}
+</a>
+</h2>
+<p class="price">${{ course.price }}</p>
+{{ course.description|linebreaks }}
+</div>
+{% endblock %}
