@@ -13,7 +13,7 @@ def course_list(request, category_slug=None):
         category = get_object_or_404(Category, 
                                     slug = category_slug,     
                                     )
-        courses = Course.objects.filter(categgory=category)
+        courses = Course.objects.filter(category=category)
     return render(request, 
                 'courses/list.html',
                 {
