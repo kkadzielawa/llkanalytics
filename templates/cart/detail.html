@@ -1,63 +1,73 @@
 {% extends "base.html" %}
-{% load bootstrap5 %}
 {% load static %}
+
 {% block title %}
 Shopping Cart
 {% endblock %}
+
 {% block content %}
 
+<div style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+    <h1 style="margin-top: 0;">Shopping Cart</h1>
 
-<div class="container">
-    
-    <div class="row">
-        <div class="col"><h1>Shopping Cart</h1></div>
-    </div>
-
-    {% for item in cart %}
-    {% with course=item.course %}
-    <div class="row">   
-        <div class="col">
-            <a href="{{ course.get_absolute_url }}">
-                <img style="width: 100px; height: 100px;"  src="{% if course.image %}{{ course.image.url }}
-                {% else %}{% static "img/no_image.png" %}{% endif %}">
-            </a>
-        </div>
-    <div class="col-6">
-        <h4>{{ course.name }}</h4>
-        <div class="d-flex">
-            <div class="">
-                <form action="{% url "cart:cart_add" course.id %}" method="post">
-                    {{ item.update_quantity_form.quantity }}
-                    {{ item.update_quantity_form.override }}
-                    <input type="submit" value="Update" class="btn btn-primary mx-2">
-                    {% csrf_token %}
-                </form>
+    {% if cart %}
+    <div style="margin-bottom: 2rem;">
+        {% for item in cart %}
+        {% with course=item.course %}
+        <div style="display: grid; grid-template-columns: 120px 1fr 300px; gap: 2rem; padding: 1.5rem; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 1rem; align-items: center;">   
+            <div>
+                <a href="{{ course.get_absolute_url }}">
+                    <img style="width: 100%; height: auto; border-radius: 4px;" src="{% if course.image %}{{ course.image.url }}{% else %}{% static 'img/no_image.png' %}{% endif %}" alt="{{ course.name }}">
+                </a>
             </div>
-            <div class="">
-                <form action="{% url "cart:cart_remove" course.id %}"
-                method="post">
-                <input type="submit" value="Remove" class="btn btn-primary mx-2">
-                {% csrf_token %}
-                </form>
+            <div>
+                <h4 style="margin-top: 0;"><a href="{{ course.get_absolute_url }}" style="color: #28a745; text-decoration: none;">{{ course.name }}</a></h4>
+                <div style="display: flex; gap: 1rem;">
+                    <form action="{% url 'cart:cart_add' course.id %}" method="post" style="display: flex; gap: 0.5rem; align-items: center;">
+                        {{ item.update_quantity_form.quantity }}
+                        {{ item.update_quantity_form.override }}
+                        <input type="submit" value="Update" style="background-color: #007bff; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">
+                        {% csrf_token %}
+                    </form>
+                    <form action="{% url 'cart:cart_remove' course.id %}" method="post">
+                        <input type="submit" value="Remove" style="background-color: #dc3545; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">
+                        {% csrf_token %}
+                    </form>
+                </div>
+            </div>
+            <div style="text-align: right;">
+                <h6 style="margin: 0 0 0.5rem 0;">Price: ${{ item.price }}</h6>
+                <h6 style="margin: 0; color: #28a745; font-weight: bold; font-size: 1.1rem;">Subtotal: ${{ item.total_price }}</h6>
             </div>
         </div>
-    </div>
-    <div class="col">
-        <h6>Price: ${{ item.price }}</h6>
-        <h6>Subtotal: ${{ item.total_price }}</h6>
-    </div>
-
         {% endwith %}
         {% endfor %}
     </div>
-    <div class="row">
-        <div class="col">
-            <h4>Total: ${{ cart.get_total_price }}</h4>
-            <a href="{% url "courses:course_list" %}" class="btn btn-primary
-            light">Continue shopping</a>
-            <a href="#" class="btn btn-primary">Checkout</a>
-            </p>
+
+    <div style="border-top: 2px solid #ddd; padding-top: 1.5rem;">
+        <h3 style="color: #28a745; margin-bottom: 1rem;">Total: ${{ cart.get_total_price }}</h3>
+        <div style="display: flex; gap: 1rem;">
+            <a href="{% url 'courses:course_list' %}" style="display: inline-block; background-color: #007bff; color: white; padding: 0.75rem 1.5rem; text-decoration: none; border-radius: 4px;">Continue Shopping</a>
+            <a href="#" style="display: inline-block; background-color: #28a745; color: white; padding: 0.75rem 1.5rem; text-decoration: none; border-radius: 4px;">Checkout</a>
         </div>
     </div>
+    {% else %}
+    <div style="text-align: center; padding: 3rem; color: #666;">
+        <p style="font-size: 1.1rem;">Your cart is empty.</p>
+        <a href="{% url 'courses:course_list' %}" style="color: #28a745; text-decoration: none;">Continue Shopping</a>
+    </div>
+    {% endif %}
 </div>
+
+<style>
+  @media (max-width: 768px) {
+    div[style*="grid-template-columns: 120px"] {
+      grid-template-columns: 1fr !important;
+    }
+    div[style*="text-align: right"] {
+      text-align: left !important;
+    }
+  }
+</style>
+
 {% endblock %}

@@ -30,7 +30,6 @@ urlpatterns = [
     path("cart/", include("cart.urls", namespace="cart")),
     path("blog/", include("blog.urls", namespace="blog")),
     path("courses/", include("courses.urls", namespace="courses")),
-    path("summernote/", include("django_summernote.urls")),
     path(
         "sitemap.xml",
         sitemap,

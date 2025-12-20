@@ -3,8 +3,6 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
 
-from django_summernote.fields import SummernoteTextField
-
 class PublishedManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(status=Post.Status.PUBLISHED)
@@ -21,7 +19,7 @@ class Post(models.Model):
     author = models.ForeignKey(User,
                                 on_delete=models.CASCADE,
                                 related_name='blog_posts')
-    body = SummernoteTextField(blank=True, null=True)
+    body = models.TextField(blank=True, null=True)
 
     publish = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)

@@ -1,6 +1,4 @@
-{% extends "base.html" %} 
-{% load bootstrap5 %}
-{% load honeypot %}
+{% extends "base.html" %}
 
 {% block title %}Contact | LLK Analytics - Get in Touch{% endblock %}
 
@@ -19,16 +17,16 @@
 {% block content %}
 
 {% if sent %}
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-  <h4 class="alert-heading">Success!</h4>
+<div style="background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 1rem; border-radius: 4px; margin: 1rem 0; position: relative;">
+  <h4 style="margin-top: 0;">Success!</h4>
   <p>Message sent successfully. Thank you for reaching out!</p>
-  <hr>
-  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  <hr style="border-color: #b1dfbb;">
+  <button type="button" style="position: absolute; right: 1rem; top: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #155724;">&times;</button>
 </div>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    const closeButton = document.querySelector('.btn-close');
+    const closeButton = document.querySelector('button[type="button"]');
     if (closeButton) {
       closeButton.addEventListener('click', function() {
         setTimeout(function() {
@@ -39,21 +37,42 @@
   });
 </script>
 {% else %}
-<div class="d-flex flex-column flex-md-row justify-content-evenly align-items-center py-3">
+<div style="display: flex; flex-direction: column; gap: 2rem; padding: 2rem; max-width: 800px; margin: 0 auto;">
 <h2>Shoot Me a Message!</h2>
 <form method="post">
-{% render_honeypot_field "last_name" %}
 {% csrf_token %}
 {% if form.non_field_errors %}
-  <div class="alert alert-warning">
+  <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; color: #856404; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
     {% for error in form.non_field_errors %}
-      <p>{{ error }}</p>
+      <p style="margin: 0.5rem 0;">{{ error }}</p>
     {% endfor %}
   </div>
 {% endif %}
-{% bootstrap_form form %}
 
-<input type="submit" class="btn btn-outline-success" value="Send">
+{% for field in form %}
+  <div style="margin-bottom: 1rem;">
+    {% if field.label %}
+      <label for="{{ field.id_for_label }}" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">{{ field.label }}</label>
+    {% endif %}
+    {% if field.field.widget.input_type == 'textarea' %}
+      <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px; font-family: inherit;" rows="5">{{ field.value|default:'' }}</textarea>
+    {% else %}
+      <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px;">
+    {% endif %}
+    {% if field.help_text %}
+      <small style="color: #666; display: block; margin-top: 0.25rem;">{{ field.help_text|safe }}</small>
+    {% endif %}
+    {% if field.errors %}
+      <div style="color: #dc3545; margin-top: 0.25rem;">
+        {% for error in field.errors %}
+          <span>{{ error }}</span>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+{% endfor %}
+
+<input type="submit" value="Send" style="background-color: #28a745; color: white; border: 1px solid #28a745; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer; font-weight: bold;">
 
 </form>
 </div>

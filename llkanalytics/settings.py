@@ -26,14 +26,13 @@ load_dotenv(BASE_DIR / '.env')
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = "l==6&j6uxkf_a&hl4+r!76+qpa%qd377+o02u=b_kyo5)qg+)4"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-=======
-DEBUG = os.getenv('DEBUG')
+DEBUG = True
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o755
@@ -49,48 +48,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     "django.contrib.sitemaps",
-    "bootstrap5",
-    "django_summernote",
     "blog.apps.BlogConfig",
     "courses.apps.CoursesConfig",
     "pages.apps.PagesConfig",
     "cart.apps.CartConfig",
-    "honeypot"
 ]
-
-HONEYPOT_FIELD_NAME = "last_name"
-
-SUMMERNOTE_CONFIG = {
-    'summernote': {
-        'width': '100%',
-        'height': '480',
-        'attrs': {
-            'placeholder': 'Write your content here...',
-            'class': 'summernote',
-        },
-        'toolbar': [
-            ['style', ['style']],
-            ['font', ['bold', 'underline', 'clear']],
-            ['fontname', ['fontname']],
-            ['color', ['color']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['table', ['table']],
-            ['insert', ['link', 'picture', 'video']],
-            ['view', ['fullscreen', 'codeview', 'help']],
-        ],
-        'css': (
-            '//netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css',
-            '//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css',
-        ),
-        'js': (
-            '//code.jquery.com/jquery-3.6.0.min.js',
-            '//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js',
-        ),
-        'codemirror': {
-            'theme': 'monokai',
-        },
-    }
-}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -167,12 +129,14 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+if DEBUG:
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, 'static')
+    ]
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+STATIC_URL = "/static/"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = "media/"
 
@@ -198,33 +162,3 @@ EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@example.com')
 
-# Logging Configuration
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
-            'style': '{',
-        },
-    },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-        'pages': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-    },
-}
