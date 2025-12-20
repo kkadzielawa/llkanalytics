@@ -1,12 +1,10 @@
 asgiref==3.8.1
 beautifulsoup4==4.12.3
-asgiref==3.8.1
-beautifulsoup4==4.12.3
 Django==4.1.7
-django-bootstrap-v5==1.0.11
-django-summernote==0.8.20.0
 django-honeypot
+django-summernote==0.8.20.0
 pillow
+psycopg2-binary
 python-dotenv==1.0.1
 soupsieve==2.6
 sqlparse==0.5.2

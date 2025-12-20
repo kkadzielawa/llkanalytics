@@ -3,6 +3,7 @@ from django.http import Http404
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
+from honeypot.decorators import check_honeypot
 
 
 from .models import Post
@@ -43,6 +44,7 @@ def post_detail(request, year, month, day, post):
 
 @require_POST
 @login_required
+@check_honeypot
 def post_comment(request, post_id):
     post = get_object_or_404(Post, id=post_id, status=Post.Status.PUBLISHED)
     comment = None
