@@ -30,50 +30,8 @@
     <meta name="twitter:image" content="{% block twitter_image %}https://llkanalytics.com/static/img/personal_photo.png{% endblock %}">
     <meta name="twitter:creator" content="@kkadzielawa">
 
-    <title>{% block title %}LLK Analytics | Data & Analytics | Blog & Services{% endblock %}</title>
-    <link href="{% static "/css/style.css" %}" rel="stylesheet">
-    
-    {% comment %} Schema.org structured data for organization {% endcomment %}
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "LLK Analytics",
-      "url": "https://llkanalytics.com",
-      "logo": "https://llkanalytics.com/static/img/personal_photo.png",
-      "description": "Blog and Services devoted to Analytics and Data Science",
-      "sameAs": [
-        "https://www.linkedin.com/in/konradkadzielawa/",
-        "https://www.youtube.com/channel/UChqPSa40XJxfD2NYq7H9Vsw",
-        "https://twitter.com/kkadzielawa"
-      ],
-      "contact": {
-        "@type": "ContactPoint",
-        "contactType": "Customer Service",
-        "url": "https://llkanalytics.com/contact"
-      }
-    }
-    </script>
-
-    {% comment %} Schema.org structured data for person/professional {% endcomment %}
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Konrad Kadzielawa",
-      "url": "https://llkanalytics.com",
-      "jobTitle": "Data Analytics Professional",
-      "worksFor": {
-        "@type": "Organization",
-        "name": "LLK Analytics"
-      },
-      "sameAs": [
-        "https://www.linkedin.com/in/konradkadzielawa/",
-        "https://www.youtube.com/channel/UChqPSa40XJxfD2NYq7H9Vsw",
-        "https://twitter.com/kkadzielawa"
-      ]
-    }
-    </script>
+    <title>LLK Analytics | Data &amp Analytics | Blog &amp Services</title>
+    <link href="{% static '/css/style.css' %}" rel="stylesheet">
   </head>
   <body style="min-height: 100vh; display: flex; flex-direction: column;">
   {% comment %} Navbar {% endcomment %}
@@ -116,16 +74,17 @@
       {% endblock %}
     </div>
 
-    <footer style="flex-shrink: 0;" class="bg-dark d-flex flex-wrap justify-content-between align-items-center py-3">
-      <div class="col-md-4 d-flex align-items-center">
-        <span class="mb-3 mb-md-0 text-light">© 2025 LLKAnalytics</span>
-      </div>
-      <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
-        <li class="ms-3 mx-2 "><a class="text-light" href="https://www.linkedin.com/in/konradkadzielawa/"><i class="fab fa-linkedin-in fa-x"></i></a></li>
-        <li class="ms-3 mx-2 "><a class="text-light" href="https://www.youtube.com/channel/UChqPSa40XJxfD2NYq7H9Vsw"><i class="fab fa-youtube fa-x"></i></a></li>
-        <li class="ms-3 mx-2 "><a class="text-light" href="https://twitter.com/kkadzielawa"><i class="fab fa-twitter fa-x"></i></a></li>
-      </ul>
-    </footer>
+      <footer class="bg-dark d-flex flex-wrap justify-content-between align-items-center py-3">
+        <div class="col-md-4 d-flex align-items-center">
+          <span class="mb-3 mb-md-0 text-light">© 2024 LLKAnalytics</span>
+        </div>
+    
+        <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+          <li class="ms-3 mx-2 "><a class="text-light" href="https://www.linkedin.com/in/konradkadzielawa/"><i class="fab fa-linkedin-in fa-x"></i></a></li>
+          <li class="ms-3 mx-2 "><a class="text-light" href="https://www.youtube.com/channel/UChqPSa40XJxfD2NYq7H9Vsw"><i class="fab fa-youtube fa-x"></i></a></li>
+          <li class="ms-3 mx-2 "><a class="text-light" href="https://twitter.com/kkadzielawa"><i class="fab fa-twitter fa-x"></i></a></li>
+        </ul>
+      </footer> 
     <script src="https://kit.fontawesome.com/6e526d197e.js" crossorigin="anonymous"></script>
   </body>
 
