@@ -30,13 +30,14 @@ load_dotenv(BASE_DIR / '.env')
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG")
+DEBUG = False
 
 # ALLOWED HOSTS
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(' ')
 
 
 # Application definition
+FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o755
 
 SITE_ID = 1
 
@@ -50,15 +51,47 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "django.contrib.sitemaps",
     "bootstrap5",
-    "ckeditor",
-    "ckeditor_uploader",
+    "django_summernote",
     "blog.apps.BlogConfig",
     "courses.apps.CoursesConfig",
     "pages.apps.PagesConfig",
     "cart.apps.CartConfig",
+    "honeypot"
 ]
 
-CKEDITOR_UPLOAD_PATH = "uploads/"
+HONEYPOT_FIELD_NAME = "last_name"
+
+SUMMERNOTE_CONFIG = {
+    'summernote': {
+        'width': '100%',
+        'height': '480',
+        'attrs': {
+            'placeholder': 'Write your content here...',
+            'class': 'summernote',
+        },
+        'toolbar': [
+            ['style', ['style']],
+            ['font', ['bold', 'underline', 'clear']],
+            ['fontname', ['fontname']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture', 'video']],
+            ['view', ['fullscreen', 'codeview', 'help']],
+        ],
+        'css': (
+            '//netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css',
+            '//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css',
+        ),
+        'js': (
+            '//code.jquery.com/jquery-3.6.0.min.js',
+            '//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js',
+        ),
+        'codemirror': {
+            'theme': 'monokai',
+        },
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -155,3 +188,49 @@ MEDIA_ROOT = "media/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CART_SESSION_ID = "cart"
+
+# Email Configuration
+# Using file backend since SMTP is blocked by firewall
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
+
+# SMTP configuration (kept for reference, but not used due to network restrictions)
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@example.com')
+
+# Logging Configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'pages': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}

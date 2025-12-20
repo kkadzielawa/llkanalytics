@@ -1,5 +1,24 @@
-{% extends "base.html" %} {% block title %}{{ post.title }}{% endblock %}
-{% block content %} {% block extrascripts %}
+{% extends "base.html" %} 
+
+{% block title %}{{ post.title }} | LLK Analytics Blog{% endblock %}
+
+{% block meta_description %}{{ post.body|truncatewords:30|striptags }}{% endblock %}
+
+{% block meta_keywords %}{{ post.tags|default:"analytics, data science" }}{% endblock %}
+
+{% block og_title %}{{ post.title }}{% endblock %}
+
+{% block og_description %}{{ post.body|truncatewords:20|striptags }}{% endblock %}
+
+{% block og_type %}article{% endblock %}
+
+{% block twitter_title %}{{ post.title }}{% endblock %}
+
+{% block twitter_description %}{{ post.body|truncatewords:20|striptags }}{% endblock %}
+
+{% block content %} 
+
+{% block extrascripts %}
   <script
     type="text/javascript"
     id="MathJax-script"
