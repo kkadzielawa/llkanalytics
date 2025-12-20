@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     "django.contrib.sitemaps",
+    "django_summernote",
     "blog.apps.BlogConfig",
     "courses.apps.CoursesConfig",
     "pages.apps.PagesConfig",
