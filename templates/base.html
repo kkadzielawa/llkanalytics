@@ -9,18 +9,31 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Blog and Services devoted to Analytics and Data Science">
-    <meta name="keywords" content="kadzielawa, llkanalytics, statistics, analysis, machine learning, sql, python">
+    <meta name="description" content="{% block meta_description %}Blog and Services devoted to Analytics and Data Science by Konrad Kadzielawa{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}kadzielawa, llkanalytics, statistics, analysis, machine learning, sql, python, data science, analytics{% endblock %}">
     <meta name="author" content="Konrad Kadzielawa">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    
+    {% comment %} Open Graph Tags {% endcomment %}
     <meta property="og:site_name" content="LLK Analytics">
-    <meta property="og:title" content="LLK Analytics"> 
-    <meta property="og:description" content="Blog and Services devoted to Analytics and Data Science">
-    <meta property="og:type" content="blog">
+    <meta property="og:title" content="{% block og_title %}LLK Analytics - Data Science & Analytics Blog{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Blog and Services devoted to Analytics and Data Science by Konrad Kadzielawa{% endblock %}">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:url" content="{% block og_url %}https://llkanalytics.com{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}https://llkanalytics.com/static/img/personal_photo.png{% endblock %}">
+    
+    {% comment %} Twitter Card Tags {% endcomment %}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}LLK Analytics{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Blog and Services devoted to Analytics and Data Science{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}https://llkanalytics.com/static/img/personal_photo.png{% endblock %}">
+    <meta name="twitter:creator" content="@kkadzielawa">
 
     <title>LLK Analytics | Data &amp Analytics | Blog &amp Services</title>
     <link href="{% static '/css/style.css' %}" rel="stylesheet">
   </head>
-  <body>
+  <body style="min-height: 100vh; display: flex; flex-direction: column;">
   {% comment %} Navbar {% endcomment %}
 
   <nav class="navbar navbar-expand-md navbar-dark bg-dark">
@@ -56,9 +69,8 @@
   </nav>
 
     
-    <div class="py-2">
+    <div style="flex: 1 0 auto;" class="py-2">
       {% block content %} 
-      
       {% endblock %}
     </div>
 

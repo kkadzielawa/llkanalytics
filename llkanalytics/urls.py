@@ -20,9 +20,9 @@ from django.conf.urls.static import static
 from django.views.generic import TemplateView
 
 from django.contrib.sitemaps.views import sitemap
-from blog.sitemaps import PostSitemap
+from blog.sitemaps import PostSitemap, CourseSitemap, StaticSitemap
 
-sitemaps = {"posts": PostSitemap}
+sitemaps = {"posts": PostSitemap, "courses": CourseSitemap, "static": StaticSitemap}
 
 urlpatterns = [
     path("", include("pages.urls", namespace="pages")),
@@ -30,7 +30,7 @@ urlpatterns = [
     path("cart/", include("cart.urls", namespace="cart")),
     path("blog/", include("blog.urls", namespace="blog")),
     path("courses/", include("courses.urls", namespace="courses")),
-    path("ckeditor", include("ckeditor_uploader.urls")),
+    path("summernote/", include("django_summernote.urls")),
     path(
         "sitemap.xml",
         sitemap,

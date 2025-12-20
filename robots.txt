@@ -1,0 +1,32 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Specific rules for search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# AI crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+# Disallow admin and sensitive areas
+Disallow: /admin/
+Disallow: /accounts/
+Disallow: /api/
+Disallow: /search/
+
+# Sitemap location
+Sitemap: https://llkanalytics.com/sitemap.xml

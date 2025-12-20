@@ -1,0 +1,96 @@
+
+============================================================
+STEP 1: FORM RECEIVED
+Time: 2025-11-30 23:30:12.397112+00:00
+Name: sdfsd
+Email: sdfs@example.com
+Message: sdfsdfs
+
+STEP 2: EMAIL PREPARED
+Subject: New Contact Message from sdfsd
+From: kkadzi25@gmail.com
+To: kkadzi25@gmail.com
+Backend: django.core.mail.backends.smtp.EmailBackend
+HOST_USER: kkadzi25@gmail.com
+HOST_PASSWORD: ****************
+
+STEP 3: ATTEMPTING TO SEND
+ERROR: OSError: [Errno 101] Network is unreachable
+Traceback (most recent call last):
+  File "/home/kkadzielawa/llkanalytics/pages/views.py", line 53, in contact
+    result = send_mail(
+             ^^^^^^^^^^
+  File "/home/kkadzielawa/llkanalytics/.venv/lib/python3.12/site-packages/django/core/mail/__init__.py", line 87, in send_mail
+    return mail.send()
+           ^^^^^^^^^^^
+  File "/home/kkadzielawa/llkanalytics/.venv/lib/python3.12/site-packages/django/core/mail/message.py", line 298, in send
+    return self.get_connection(fail_silently).send_messages([self])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kkadzielawa/llkanalytics/.venv/lib/python3.12/site-packages/django/core/mail/backends/smtp.py", line 124, in send_messages
+    new_conn_created = self.open()
+                       ^^^^^^^^^^^
+  File "/home/kkadzielawa/llkanalytics/.venv/lib/python3.12/site-packages/django/core/mail/backends/smtp.py", line 80, in open
+    self.connection = self.connection_class(
+                      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 255, in __init__
+    (code, msg) = self.connect(host, port)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 341, in connect
+    self.sock = self._get_socket(host, port, self.timeout)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 312, in _get_socket
+    return socket.create_connection((host, port), timeout,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/socket.py", line 865, in create_connection
+    raise exceptions[0]
+  File "/usr/lib/python3.12/socket.py", line 850, in create_connection
+    sock.connect(sa)
+OSError: [Errno 101] Network is unreachable
+============================================================
+
+============================================================
+STEP 1: FORM RECEIVED
+Time: 2025-11-30 23:33:46.037216+00:00
+Name: Simonsyday
+Email: dinanikolskaya99@gmail.com
+Message: Hi, kam dashur të di çmimin tuaj
+
+STEP 2: EMAIL PREPARED
+Subject: New Contact Message from Simonsyday
+From: kkadzi25@gmail.com
+To: kkadzi25@gmail.com
+Backend: django.core.mail.backends.smtp.EmailBackend
+HOST_USER: kkadzi25@gmail.com
+HOST_PASSWORD: ****************
+
+STEP 3: ATTEMPTING TO SEND
+ERROR: OSError: [Errno 101] Network is unreachable
+Traceback (most recent call last):
+  File "/home/kkadzielawa/llkanalytics/pages/views.py", line 53, in contact
+  File "/home/kkadzielawa/llkanalytics/.venv/lib/python3.12/site-packages/django/core/mail/__init__.py", line 87, in send_mail
+    return mail.send()
+           ^^^^^^^^^^^
+  File "/home/kkadzielawa/llkanalytics/.venv/lib/python3.12/site-packages/django/core/mail/message.py", line 298, in send
+    return self.get_connection(fail_silently).send_messages([self])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kkadzielawa/llkanalytics/.venv/lib/python3.12/site-packages/django/core/mail/backends/smtp.py", line 124, in send_messages
+    new_conn_created = self.open()
+                       ^^^^^^^^^^^
+  File "/home/kkadzielawa/llkanalytics/.venv/lib/python3.12/site-packages/django/core/mail/backends/smtp.py", line 80, in open
+    self.connection = self.connection_class(
+                      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 255, in __init__
+    (code, msg) = self.connect(host, port)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 341, in connect
+    self.sock = self._get_socket(host, port, self.timeout)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 312, in _get_socket
+    return socket.create_connection((host, port), timeout,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/socket.py", line 865, in create_connection
+    raise exceptions[0]
+  File "/usr/lib/python3.12/socket.py", line 850, in create_connection
+    sock.connect(sa)
+OSError: [Errno 101] Network is unreachable
+============================================================

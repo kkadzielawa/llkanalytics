@@ -2,6 +2,7 @@ from django.shortcuts import render,  get_object_or_404
 from django.http import Http404
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
 
 
 from .models import Post
@@ -41,6 +42,7 @@ def post_detail(request, year, month, day, post):
                     )
 
 @require_POST
+@login_required
 def post_comment(request, post_id):
     post = get_object_or_404(Post, id=post_id, status=Post.Status.PUBLISHED)
     comment = None
@@ -48,6 +50,15 @@ def post_comment(request, post_id):
     if form.is_valid():
         comment = form.save(commit=False)
         comment.post = post
+        # Ensure the saved comment is attributed to the logged-in user
+        # Use the user's full name when available, otherwise the username.
+        try:
+            full_name = request.user.get_full_name()
+        except Exception:
+            full_name = ''
+        comment.name = full_name or getattr(request.user, 'username', '')
+        # Use the user's email if available
+        comment.email = getattr(request.user, 'email', '')
         comment.save()
     return render(request, 'blog/post/comment.html',
                             {

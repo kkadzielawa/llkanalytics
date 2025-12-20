@@ -2,10 +2,24 @@
 {% load bootstrap5 %}
 {% load static %}
 
-
 {% block title %}
-{% if category %}{{ category.name }}{% else %}Courses{% endif %}
+{% if category %}{{ category.name }} - Courses{% else %}Courses | LLK Analytics{% endif %}
 {% endblock %}
+
+{% block meta_description %}
+{% if category %}
+Explore {{ category.name }} courses on data science, analytics, and Python programming. Learn from expert instructor Konrad Kadzielawa.
+{% else %}
+Browse our collection of data science, analytics, and programming courses. Learn SQL, Python, machine learning, and more from expert Konrad Kadzielawa.
+{% endif %}
+{% endblock %}
+
+{% block meta_keywords %}online courses, data science training, Python courses, SQL tutorials, machine learning courses, analytics training{% endblock %}
+
+{% block og_title %}{% if category %}{{ category.name }}{% else %}Courses{% endif %} | LLK Analytics{% endblock %}
+
+{% block og_description %}Learn data science, analytics, and programming from expert instructor Konrad Kadzielawa{% endblock %}
+
 {% block content %}
 <div id="sidebar">
 <h3>Categories</h3>
@@ -30,8 +44,8 @@
 {{course}}
 <div class="item">
 <a href="{{ course.get_absolute_url }}">
-<img style="width: 100px; height: 100px;" src="{% if course.image %}{{ course.image.url }}{% else %}{%
-static "img/no_image.png" %}{% endif %}">
+<img style="width: 100px; height: 100px;" src="{% if course.image %}{{ course.image.url }}{% else %}
+{%static "img/sql101.jpg" %}{% endif %}">
 </a>
 <br>
 <a href="{{ course.get_absolute_url }}">{{ course.name }}</a>
