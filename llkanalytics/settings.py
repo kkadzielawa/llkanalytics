@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "django.contrib.sitemaps",
     "django_summernote",
+    "honeypot",
     "blog.apps.BlogConfig",
     "courses.apps.CoursesConfig",
     "pages.apps.PagesConfig",
@@ -63,6 +64,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'honeypot.middleware.HoneypotMiddleware',
 ]
 
 ROOT_URLCONF = "llkanalytics.urls"
@@ -167,3 +169,6 @@ EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 
 DEFAULT_FROM_EMAIL = "kkadzi25@gmail.com"
 
+# Honeypot Configuration
+HONEYPOT_FIELD_NAME = 'website'
+HONEYPOT_VALUE = ''
