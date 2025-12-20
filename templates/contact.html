@@ -1,4 +1,7 @@
+
 {% extends "base.html" %}
+
+{% load honeypot %}
 
 {% block title %}Contact | LLK Analytics - Get in Touch{% endblock %}
 
@@ -72,6 +75,7 @@
   </div>
 {% endfor %}
 
+{% render_honeypot_field %}
 <input type="submit" value="Send" style="background-color: #28a745; color: white; border: 1px solid #28a745; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer; font-weight: bold;">
 
 </form>

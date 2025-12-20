@@ -4,6 +4,7 @@ from django.conf import settings
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from django.utils.decorators import method_decorator
+from honeypot.decorators import check_honeypot
 import logging
 import re
 
@@ -33,6 +34,7 @@ def is_suspicious_content(text):
     return False
 
 @require_http_methods(["GET", "POST"])
+@check_honeypot
 def contact(request):
     if request.method == 'POST':
         form = EmailPostForm(request.POST)
