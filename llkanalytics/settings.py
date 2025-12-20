@@ -90,9 +90,13 @@ WSGI_APPLICATION = "llkanalytics.wsgi.application"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'llkanalytics',
+        'USER': 'kkadzielawa',
+        'PASSWORD': "password",
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -161,5 +165,5 @@ EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 # EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 # EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@example.com')
+DEFAULT_FROM_EMAIL = "kkadzi25@gmail.com"
 
