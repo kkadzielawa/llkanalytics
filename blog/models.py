@@ -19,7 +19,7 @@ class Post(models.Model):
     author = models.ForeignKey(User,
                                 on_delete=models.CASCADE,
                                 related_name='blog_posts')
-    body = models.TextField(blank=True, null=True)
+    body = models.TextField(blank=True, null=True, help_text="Rich text editor for post content")
 
     publish = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)
