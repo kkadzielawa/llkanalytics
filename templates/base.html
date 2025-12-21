@@ -1,0 +1,107 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{% block meta_description %}Blog and Services devoted to Analytics and Data Science by Konrad Kadzielawa{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}kadzielawa, llkanalytics, statistics, analysis, machine learning, sql, python, data science, analytics{% endblock %}">
+    <meta name="author" content="Konrad Kadzielawa">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    
+    {% comment %} Open Graph Tags {% endcomment %}
+    <meta property="og:site_name" content="LLK Analytics">
+    <meta property="og:title" content="{% block og_title %}LLK Analytics - Data Science & Analytics Blog{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Blog and Services devoted to Analytics and Data Science by Konrad Kadzielawa{% endblock %}">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:url" content="{% block og_url %}https://llkanalytics.com{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}https://llkanalytics.com/static/img/personal_photo.png{% endblock %}">
+    
+    {% comment %} Twitter Card Tags {% endcomment %}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}LLK Analytics{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Blog and Services devoted to Analytics and Data Science{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}https://llkanalytics.com/static/img/personal_photo.png{% endblock %}">
+    <meta name="twitter:creator" content="@kkadzielawa">
+
+    <title>LLK Analytics | Data &amp Analytics | Blog &amp Services</title>
+    <link href="{% static '/css/style.css' %}" rel="stylesheet">
+  </head>
+  <body style="min-height: 100vh; display: flex; flex-direction: column;">
+  {% comment %} Navbar {% endcomment %}
+
+  <nav style="background-color: #333; padding: 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+      <a href="{% url 'pages:home' %}" style="font-size: 1.25rem; color: white; text-decoration: none; font-weight: bold;">LLK Analytics</a>
+      <button id="navToggle" style="display: none; background: none; border: none; color: white; font-size: 1.25rem; cursor: pointer;">☰</button>
+      <div id="navMenu" style="display: flex; gap: 2rem; align-items: center;">
+        <a href="{% url 'pages:home' %}" style="color: white; text-decoration: none;">Home</a>
+        <a href="{% url 'blog:post_list' %}" style="color: white; text-decoration: none;">Blog</a>
+        <a href="{% url 'pages:services' %}" style="color: white; text-decoration: none;">Services</a>
+        <a href="{% url 'courses:course_list' %}" style="color: white; text-decoration: none;">Courses</a>
+        <a href="{% url 'pages:contact' %}" style="color: white; text-decoration: none;">Contact</a>
+        <form style="display: flex; gap: 0.5rem;">
+          <input type="search" placeholder="Search" style="padding: 0.5rem; border-radius: 4px; border: 1px solid #ddd;">
+          <button type="submit" style="padding: 0.5rem 1rem; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">Search</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <style>
+    @media (max-width: 768px) {
+      #navMenu {
+        display: none !important;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background-color: #333;
+        padding: 1rem;
+        gap: 1rem;
+      }
+      #navMenu.active {
+        display: flex !important;
+      }
+      #navToggle {
+        display: block !important;
+      }
+    }
+  </style>
+
+  <script>
+    const toggleBtn = document.getElementById('navToggle');
+    const navMenu = document.getElementById('navMenu');
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', function() {
+        navMenu.classList.toggle('active');
+      });
+    }
+  </script>
+
+    
+    <div style="flex: 1 0 auto; padding: 2rem;">
+      {% block content %} 
+      {% endblock %}
+    </div>
+
+    <footer style="background-color: #333; color: white; padding: 2rem; text-align: center;">
+      <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span>© 2025 LLKAnalytics</span>
+        </div>
+    
+        <ul style="list-style: none; display: flex; gap: 1.5rem; margin: 0; padding: 0;">
+          <li><a href="https://www.linkedin.com/in/konradkadzielawa/" style="color: white; text-decoration: none;"><i class="fab fa-linkedin-in"></i></a></li>
+          <li><a href="https://www.youtube.com/channel/UChqPSa40XJxfD2NYq7H9Vsw" style="color: white; text-decoration: none;"><i class="fab fa-youtube"></i></a></li>
+          <li><a href="https://twitter.com/kkadzielawa" style="color: white; text-decoration: none;"><i class="fab fa-twitter"></i></a></li>
+        </ul>
+      </div>
+    </footer> 
+    <script src="https://kit.fontawesome.com/6e526d197e.js" crossorigin="anonymous"></script>
+  </body>
+
+</html>

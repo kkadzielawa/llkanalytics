@@ -1,0 +1,42 @@
+{% extends "base.html" %} 
+
+{% block title %}Blog | LLK Analytics - Data Science & Analytics Articles{% endblock %}
+
+{% block meta_description %}Read articles about data analytics, data science, Python, SQL, machine learning, and business intelligence. Expert insights from Konrad Kadzielawa.{% endblock %}
+
+{% block meta_keywords %}analytics blog, data science articles, python tutorials, SQL guides, machine learning, business intelligence{% endblock %}
+
+{% block og_title %}LLK Analytics Blog - Data Science Articles{% endblock %}
+
+{% block og_description %}Articles about data analytics, data science, Python, SQL, and machine learning{% endblock %}
+
+{% block og_type %}blog{% endblock %}
+
+{% block twitter_title %}LLK Analytics Blog{% endblock %}
+
+{% block twitter_description %}Read articles about data analytics and data science{% endblock %}
+
+{% block content %} 
+
+{% block extrascripts %}
+  <script
+    type="text/javascript"
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3.0.0/es5/tex-mml-chtml.js"
+  ></script>
+{% endblock extrascripts %}
+
+{% for post in posts %}
+<div style="border: 1px solid #ddd; border-radius: 8px; margin: 1rem auto; padding: 0; max-width: 900px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+  <h2 style="margin: 0; padding: 1rem; background-color: #f8f9fa; border-bottom: 1px solid #ddd;"><a href="{{ post.get_absolute_url }}" style="color: #28a745; text-decoration: none;">{{ post.title }}</a></h2>
+  <div style="padding: 1rem;">
+    <p style="color: #666; margin: 0 0 1rem 0;">Published {{ post.publish }} by {{ post.author }}</p>
+    {{ post.body|safe|truncatewords:5|linebreaks }}   
+  </div>
+</div>
+{% endfor %}
+
+{% include "blog/pagination.html" with page=posts %}
+    
+{% endblock %}

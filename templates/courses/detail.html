@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ course.name }} | LLK Analytics Courses{% endblock %}
+
+{% block meta_description %}{{ course.description|truncatewords:30|striptags }} Learn from expert instructor Konrad Kadzielawa. Price: ${{ course.price }}{% endblock %}
+
+{% block meta_keywords %}{{ course.name }}, {{ course.category }}, online course, data science, python, analytics{% endblock %}
+
+{% block og_title %}{{ course.name }} - LLK Analytics{% endblock %}
+
+{% block og_description %}{{ course.description|truncatewords:20|striptags }}{% endblock %}
+
+{% block og_type %}product{% endblock %}
+
+{% block twitter_title %}{{ course.name }}{% endblock %}
+
+{% block twitter_description %}{{ course.description|truncatewords:20|striptags }}{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto; padding: 2rem;">
+  <div style="margin-bottom: 1rem;">
+    <a href="{% url 'courses:course_list' %}" style="color: #28a745; text-decoration: none;">Courses</a> / 
+    <a href="{{ course.category.get_absolute_url }}" style="color: #28a745; text-decoration: none;">{{ course.category }}</a>
+  </div>
+
+  <img style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem;" src="{% if course.image %}{{ course.image.url }}{% else %}{% static 'img/sql101.jpg' %}{% endif %}" alt="{{ course.name }}">
+  
+  <h1 style="margin: 1rem 0;">{{ course.name }}</h1>
+  
+  <h2 style="color: #666; margin: 1rem 0;">{{ course.category }}</h2>
+  
+  <p style="font-size: 1.5rem; color: #28a745; font-weight: bold; margin: 1rem 0;">${{ course.price }}</p>
+  
+  <div style="color: #333; line-height: 1.8; margin: 2rem 0;">
+    {{ course.description|linebreaks }}
+  </div>
+
+  <form action="{% url 'cart:cart_add' course.id %}" method="post" style="display: flex; gap: 1rem; align-items: center;">
+    {{ cart_course_form }}
+    {% csrf_token %}
+    <input type="submit" value="Add to cart" style="background-color: #28a745; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer; font-weight: bold;">
+  </form>
+</div>
+{% endblock %}

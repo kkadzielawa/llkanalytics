@@ -1,0 +1,50 @@
+{% extends "base.html" %} 
+
+{% load static %}
+
+{% block title %}Home | LLK Analytics - Data Science & Analytics Services{% endblock %}
+
+{% block meta_description %}Discover data analytics and data science services by Konrad Kadzielawa. Expert in analytics, SQL, Python, and machine learning. Read the latest analytics blog.{% endblock %}
+
+{% block meta_keywords %}data analytics, data science, SQL, Python, machine learning, analytics services, chicago analytics{% endblock %}
+
+{% block og_title %}LLK Analytics - Home | Analytics & Data Science Services{% endblock %}
+
+{% block og_description %}Konrad Kadzielawa provides expert data analytics and data science services. Check out the blog and services.{% endblock %}
+
+{% block og_type %}website{% endblock %}
+
+{% block twitter_title %}LLK Analytics - Data Science & Analytics{% endblock %}
+
+{% block twitter_description %}Expert data analytics and data science services by Konrad Kadzielawa{% endblock %}
+
+{% block content %}
+
+<div style="display: flex; align-items: center; justify-content: center; width: 100%; min-height: 600px; padding: 2rem;">
+  <div style="max-width: 1200px; width: 100%;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center;">
+        <div style="text-align: center;">
+            <img src="{% static 'img/personal_photo.png' %}" alt="Konrad Kadzielawa" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        </div>
+        <div>
+            <p style="line-height: 1.8; font-size: 1rem;">
+                Hi! My name is Konrad Kadzielawa and I am a Chicago-based data analytics professional. <br>
+                I have been involved in a variety of analytics-related professions ever since I started professional work. <br>
+                This site is centered on the blog section where I intend to regularly post information relevant to analytics/data science and how it can impact your business. <br>
+                I also offer services related to analytics - more available in the Services section of this website. Lastly, please click on the contact section to contact me with relevant inquiries. <br><br>
+                Thank you!
+            </p>
+        </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  @media (max-width: 768px) {
+    div[style*="grid-template-columns"] {
+      grid-template-columns: 1fr !important;
+    }
+  }
+</style>
+
+{% endblock %}

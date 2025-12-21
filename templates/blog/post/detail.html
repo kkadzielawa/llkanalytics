@@ -1,0 +1,60 @@
+{% extends "base.html" %} 
+
+{% block title %}{{ post.title }} | LLK Analytics Blog{% endblock %}
+
+{% block meta_description %}{{ post.body|truncatewords:30|striptags }}{% endblock %}
+
+{% block meta_keywords %}{{ post.tags|default:"analytics, data science" }}{% endblock %}
+
+{% block og_title %}{{ post.title }}{% endblock %}
+
+{% block og_description %}{{ post.body|truncatewords:20|striptags }}{% endblock %}
+
+{% block og_type %}article{% endblock %}
+
+{% block twitter_title %}{{ post.title }}{% endblock %}
+
+{% block twitter_description %}{{ post.body|truncatewords:20|striptags }}{% endblock %}
+
+{% block content %} 
+
+{% block extrascripts %}
+  <script
+    type="text/javascript"
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3.0.0/es5/tex-mml-chtml.js"
+  ></script>
+{% endblock extrascripts %}
+
+<div style="max-width: 900px; margin: 0 auto; padding: 2rem;">
+  <a href="{% url 'blog:post_list' %}" style="display: inline-block; padding: 0.5rem 1rem; border: 1px solid #6c757d; color: #6c757d; text-decoration: none; border-radius: 4px; margin-bottom: 1rem;">Back to Blog</a>
+
+  <h1 style="color: #28a745; padding: 1rem 0;">{{ post.title }}</h1>
+  <p style="color: #666; margin-bottom: 2rem;">Published {{ post.publish }} by {{ post.author }}</p>
+  
+  {{ post.body|safe|linebreaks }} 
+  
+  {% with comments.count as total_comments %}
+  <h2 style="margin-top: 2rem;">
+    {{ total_comments }} comment{{ total_comments|pluralize }}
+  </h2>
+  {% endwith %}
+  
+  {% for comment in comments %}
+  <div style="border: 1px solid #ddd; border-radius: 8px; margin: 1rem 0; padding: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <p style="margin: 0; padding: 1rem; background-color: #f8f9fa; border-bottom: 1px solid #ddd;">Comment {{ forloop.counter }} by {{ comment.name }} - {{ comment.created }}</p>
+    <div style="padding: 1rem;">
+      <p style="margin: 0;">
+        {{ comment.body|linebreaks }}
+      </p>
+    </div>
+  </div>
+  {% empty %}
+  <p>There are no comments.</p>
+  {% endfor %}
+
+  {% include "blog/post/includes/comment_form.html" %}
+</div>
+
+{% endblock %}
