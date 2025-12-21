@@ -2,7 +2,6 @@ from django.shortcuts import render,  get_object_or_404
 from django.http import Http404
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
-from django.contrib.auth.decorators import login_required
 from honeypot.decorators import check_honeypot
 
 
@@ -43,7 +42,6 @@ def post_detail(request, year, month, day, post):
                     )
 
 @require_POST
-@login_required
 @check_honeypot
 def post_comment(request, post_id):
     post = get_object_or_404(Post, id=post_id, status=Post.Status.PUBLISHED)
@@ -52,15 +50,15 @@ def post_comment(request, post_id):
     if form.is_valid():
         comment = form.save(commit=False)
         comment.post = post
-        # Ensure the saved comment is attributed to the logged-in user
-        # Use the user's full name when available, otherwise the username.
-        try:
-            full_name = request.user.get_full_name()
-        except Exception:
-            full_name = ''
-        comment.name = full_name or getattr(request.user, 'username', '')
-        # Use the user's email if available
-        comment.email = getattr(request.user, 'email', '')
+        # If the user is authenticated, prefer their account info
+        if getattr(request.user, 'is_authenticated', False):
+            full_name = request.user.get_full_name() or getattr(request.user, 'username', '')
+            comment.name = full_name
+            # Only override email if the user has one set
+            user_email = getattr(request.user, 'email', '')
+            if user_email:
+                comment.email = user_email
+        # For anonymous users, the form-provided name/email are kept
         comment.save()
     return render(request, 'blog/post/comment.html',
                             {
