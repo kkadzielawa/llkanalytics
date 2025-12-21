@@ -60,10 +60,13 @@ def post_comment(request, post_id):
                 comment.email = user_email
         # For anonymous users, the form-provided name/email are kept
         comment.save()
+    # Always include the active comments so the template can render
+    comments = post.comments.filter(active=True)
     return render(request, 'blog/post/comment.html',
                             {
                             'post': post,
                             'form': form,
-                            'comment': comment
+                            'comment': comment,
+                            'comments': comments,
                             }
                 )
