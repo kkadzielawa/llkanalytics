@@ -22,14 +22,14 @@ Shopping Cart
             </div>
             <div>
                 <h4 style="margin-top: 0;"><a href="{{ course.get_absolute_url }}" style="color: #28a745; text-decoration: none;">{{ course.name }}</a></h4>
-                <div style="display: flex; gap: 1rem;">
+                <div style="display: flex; gap: 1rem; align-items: center;">
                     <form action="{% url 'cart:cart_add' course.id %}" method="post" style="display: flex; gap: 0.5rem; align-items: center;">
                         {{ item.update_quantity_form.quantity }}
                         {{ item.update_quantity_form.override }}
                         <input type="submit" value="Update" style="background-color: #007bff; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">
                         {% csrf_token %}
                     </form>
-                    <form action="{% url 'cart:cart_remove' course.id %}" method="post">
+                    <form action="{% url 'cart:cart_remove' course.id %}" method="post" style="display: flex; align-items: center;">
                         <input type="submit" value="Remove" style="background-color: #dc3545; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">
                         {% csrf_token %}
                     </form>
