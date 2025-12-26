@@ -1,5 +1,5 @@
 {% load honeypot %}
-<div style="display: flex; flex-direction: column; gap: 1rem; padding: 2rem; margin-top: 2rem; border-top: 2px solid #ddd;">
+<div style="display: flex; flex-direction: column; gap: 1rem; padding: 2rem 0 2rem 0; margin-top: 2rem; border-top: 2px solid #ddd;">
 	<h2>Add a new comment</h2>
 	<form action="{% url 'blog:post_comment' post.id %}" method="post">
 		{% csrf_token %}
@@ -54,6 +54,6 @@
 		{% endfor %}
 
 		{% render_honeypot_field %}
-		<input type="submit" value="Add comment" style="background-color: #28a745; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer; font-weight: bold;">
+		<input type="submit" value="Add comment" style="background-color: #28a745; color: white; border: none; padding: 0.75rem 1.5rem; margin-top: 1rem; border-radius: 4px; cursor: pointer; font-weight: bold;">
 	</form>
 </div>
