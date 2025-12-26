@@ -4,4 +4,4 @@ class EmailPostForm(forms.Form):
     name = forms.CharField(max_length=25)
     email = forms.EmailField()
     message = forms.CharField(required=False,
-                                widget=forms.Textarea)
+                                widget=forms.Textarea(attrs={'rows': 15}))
