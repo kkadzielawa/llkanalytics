@@ -36,10 +36,10 @@
     {{ course.description|linebreaks }}
   </div>
 
-  <form action="{% url 'cart:cart_add' course.id %}" method="post" style="display: flex; gap: 1rem; align-items: center;">
+  <form action="{% url 'cart:cart_add' course.id %}" method="post" style="display: flex; flex-direction: column; gap: 0.5rem; width: fit-content;">
     {{ cart_course_form }}
     {% csrf_token %}
-    <input type="submit" value="Add to cart" style="background-color: #28a745; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer; font-weight: bold;">
+    <input type="submit" value="Add to cart" style="background-color: #28a745; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer; font-weight: bold; align-self: flex-start;">
   </form>
 </div>
 {% endblock %}
