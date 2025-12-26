@@ -19,9 +19,9 @@
 							<label for="{{ field.id_for_label }}" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">{{ field.label }}</label>
 						{% endif %}
 						{% if field.field.widget.input_type == 'textarea' %}
-							<textarea name="{{ field.name }}" id="{{ field.id_for_label }}" style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; min-height: 120px;">{{ field.value|default:'' }}</textarea>
+							<textarea name="{{ field.name }}" id="{{ field.id_for_label }}" style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; min-height: 120px; box-sizing: border-box;">{{ field.value|default:'' }}</textarea>
 						{% else %}
-							<input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px;">
+							<input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
 						{% endif %}
 						{% if field.errors %}
 							<div style="color: #dc3545; margin-top: 0.25rem;">
@@ -38,9 +38,9 @@
 						<label for="{{ field.id_for_label }}" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">{{ field.label }}</label>
 					{% endif %}
 					{% if field.field.widget.input_type == 'textarea' %}
-						<textarea name="{{ field.name }}" id="{{ field.id_for_label }}" style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; min-height: 120px;">{{ field.value|default:'' }}</textarea>
+						<textarea name="{{ field.name }}" id="{{ field.id_for_label }}" style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; min-height: 120px; box-sizing: border-box;">{{ field.value|default:'' }}</textarea>
 					{% else %}
-						<input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px;">
+						<input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
 					{% endif %}
 					{% if field.errors %}
 						<div style="color: #dc3545; margin-top: 0.25rem;">
