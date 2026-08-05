@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-llkanalytics}
+      POSTGRES_USER: ${POSTGRES_USER:-llkanalytics}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-llkanalytics}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-llkanalytics} -d ${POSTGRES_DB:-llkanalytics}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    restart: unless-stopped
+    command: python manage.py runserver 0.0.0.0:8000
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql://llkanalytics:llkanalytics@db:5432/llkanalytics}
+      MEDIA_ROOT: /app/media
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - media_data:/app/media
+
+volumes:
+  postgres_data:
+  media_data:

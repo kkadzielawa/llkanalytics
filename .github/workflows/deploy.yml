@@ -1,0 +1,91 @@
+name: Test and Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - deploy
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: llkanalytics
+          POSTGRES_USER: llkanalytics
+          POSTGRES_PASSWORD: llkanalytics
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U llkanalytics -d llkanalytics"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      SECRET_KEY: ci-secret-key
+      DEBUG: "False"
+      ALLOWED_HOSTS: localhost,127.0.0.1,testserver
+      CSRF_TRUSTED_ORIGINS: http://localhost:8000
+      SITE_URL: http://localhost:8000
+      DATABASE_URL: postgresql://llkanalytics:llkanalytics@localhost:5432/llkanalytics
+      EMAIL_BACKEND: django.core.mail.backends.locmem.EmailBackend
+      DEFAULT_FROM_EMAIL: hello@llkanalytics.com
+      CONTACT_FORM_RECIPIENTS: hello@llkanalytics.com
+      USE_X_FORWARDED_PROTO: "False"
+      SECURE_SSL_REDIRECT: "False"
+      SESSION_COOKIE_SECURE: "False"
+      CSRF_COOKIE_SECURE: "False"
+      SECURE_HSTS_SECONDS: "0"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Check migrations
+        run: python manage.py makemigrations blog courses pages cart --check --dry-run
+
+      - name: Apply migrations
+        run: python manage.py migrate --noinput
+
+      - name: Django checks
+        run: python manage.py check
+
+      - name: Collect static files
+        run: python manage.py collectstatic --noinput
+
+      - name: Run tests
+        run: python manage.py test
+
+  deploy:
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/deploy'
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            export PROJECT_DIR="${{ secrets.DEPLOY_PATH }}"
+            export DEPLOY_BRANCH="${{ github.ref_name }}"
+            sh "${{ secrets.DEPLOY_PATH }}/scripts/deploy-production.sh"
+
+      - name: Smoke check
+        run: |
+          for attempt in 1 2 3 4 5; do
+            curl --fail --silent --show-error "https://${{ secrets.SITE_DOMAIN }}/" && break
+            sleep 5
+          done
+          curl --fail --silent --show-error "https://${{ secrets.SITE_DOMAIN }}/blog/"

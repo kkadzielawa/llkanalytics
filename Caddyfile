@@ -1,0 +1,19 @@
+{
+    email {$ACME_EMAIL}
+}
+
+{$SITE_DOMAIN:llkanalytics.com}, www.{$SITE_DOMAIN:llkanalytics.com} {
+    encode zstd gzip
+
+    handle /static/* {
+        root * /srv
+        file_server
+    }
+
+    handle /media/* {
+        root * /srv
+        file_server
+    }
+
+    reverse_proxy web:8000
+}

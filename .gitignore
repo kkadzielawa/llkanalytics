@@ -8,6 +8,9 @@ __pycache__/
 # ALL ENV FILES #
 #################
 **/.env
+.env
+.env.*
+!.env.example
 
 #ALL .VENV #
 ############
@@ -23,3 +26,7 @@ data/
 #########
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
+
+db.sqlite3
+staticfiles/
+sent_emails/

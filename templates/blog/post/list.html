@@ -1,42 +1,53 @@
-{% extends "base.html" %} 
+{% extends "base.html" %}
 
-{% block title %}Blog | LLK Analytics - Data Science & Analytics Articles{% endblock %}
-
-{% block meta_description %}Read articles about data analytics, data science, Python, SQL, machine learning, and business intelligence. Expert insights from Konrad Kadzielawa.{% endblock %}
-
-{% block meta_keywords %}analytics blog, data science articles, python tutorials, SQL guides, machine learning, business intelligence{% endblock %}
-
-{% block og_title %}LLK Analytics Blog - Data Science Articles{% endblock %}
-
-{% block og_description %}Articles about data analytics, data science, Python, SQL, and machine learning{% endblock %}
-
+{% block title %}Blog | LLK Analytics{% endblock %}
+{% block meta_description %}Read articles about analytics, data science, Python, SQL, machine learning, and business intelligence.{% endblock %}
+{% block meta_keywords %}analytics blog, data science articles, python tutorials, sql guides, machine learning{% endblock %}
+{% block og_title %}LLK Analytics Blog{% endblock %}
+{% block og_description %}Articles about analytics, data science, Python, SQL, and machine learning.{% endblock %}
 {% block og_type %}blog{% endblock %}
-
 {% block twitter_title %}LLK Analytics Blog{% endblock %}
+{% block twitter_description %}Read articles about analytics and data science.{% endblock %}
 
-{% block twitter_description %}Read articles about data analytics and data science{% endblock %}
-
-{% block content %} 
-
-{% block extrascripts %}
+{% block extra_head %}
   <script
     type="text/javascript"
     id="MathJax-script"
     async
     src="https://cdn.jsdelivr.net/npm/mathjax@3.0.0/es5/tex-mml-chtml.js"
   ></script>
-{% endblock extrascripts %}
+{% endblock %}
 
-{% for post in posts %}
-<div style="border: 1px solid #ddd; border-radius: 8px; margin: 1rem auto; padding: 0; max-width: 900px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-  <h2 style="margin: 0; padding: 1rem; background-color: #f8f9fa; border-bottom: 1px solid #ddd;"><a href="{{ post.get_absolute_url }}" style="color: #28a745; text-decoration: none;">{{ post.title }}</a></h2>
-  <div style="padding: 1rem;">
-    <p style="color: #666; margin: 0 0 1rem 0;">Published {{ post.publish }} by {{ post.author }}</p>
-    {{ post.body|safe|truncatewords:5|linebreaks }}   
-  </div>
-</div>
-{% endfor %}
+{% block content %}
+  <section class="page-section">
+    <div class="container reading-width">
+      <div class="page-intro">
+        <p class="eyebrow">Blog</p>
+        <h1>Applied analytics notes, tutorials, and working ideas.</h1>
+      </div>
 
-{% include "blog/pagination.html" with page=posts %}
-    
+      <div class="stack-lg">
+        {% for post in posts %}
+          <article class="signal-card signal-card-blog">
+            <div class="signal-card-header">
+              <span class="meta-chip">{{ post.publish|date:"M d, Y" }}</span>
+              <span class="meta-rail">By {{ post.author }}</span>
+            </div>
+            <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+            <div class="card-copy">
+              {{ post.body|safe|truncatewords:30|linebreaks }}
+            </div>
+            <a href="{{ post.get_absolute_url }}" class="text-link">Open article</a>
+          </article>
+        {% empty %}
+          <article class="signal-card">
+            <h2>No posts published yet.</h2>
+            <p>The blog route is live and ready for the first post from admin.</p>
+          </article>
+        {% endfor %}
+      </div>
+
+      {% include "blog/pagination.html" with page=posts %}
+    </div>
+  </section>
 {% endblock %}
