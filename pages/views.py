@@ -1,75 +1,55 @@
-from django.shortcuts import render, redirect
-from django.core.mail import send_mail
+import logging
+
 from django.conf import settings
+from django.contrib import messages
+from django.core.mail import EmailMessage
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
-from django.utils.decorators import method_decorator
-from honeypot.decorators import check_honeypot
-import logging
-import re
 
-from .forms import EmailPostForm
+from .forms import ContactForm
 
 logger = logging.getLogger(__name__)
 
-def is_suspicious_content(text):
-    """Check for common spam patterns"""
-    if not text:
-        return False
-    
-    # URLs in message (common spam indicator)
-    url_pattern = r'https?://|www\.|\.com|\.net|\.org'
-    if re.search(url_pattern, text, re.IGNORECASE):
-        return True
-    
-    # Excessive repetition
-    if len(text) > 500 and len(set(text)) < len(text) * 0.2:
-        return True
-    
-    # Suspicious keywords
-    spam_keywords = ['viagra', 'casino', 'lottery', 'click here', 'buy now', 'limited offer']
-    if any(keyword in text.lower() for keyword in spam_keywords):
-        return True
-    
-    return False
 
 @require_http_methods(["GET", "POST"])
-@check_honeypot
 def contact(request):
-    if request.method == 'POST':
-        form = EmailPostForm(request.POST)
-        if form.is_valid():
-            cd = form.cleaned_data
-            
-            # Additional spam checks
-            if is_suspicious_content(cd.get('message', '')):
-                logger.warning(f"Suspicious content detected from {cd['email']}")
-                # Still show success to not reveal to spammers
-                return redirect(reverse('pages:contact') + '?sent=1')
-            
-            # Basic email validation
-            if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', cd['email']):
-                form.add_error('email', 'Invalid email format')
-            else:
-                subject = f"New Contact Message from {cd['name']}"
-                message = f"Name: {cd['name']}\nEmail: {cd['email']}\n\nMessage:\n{cd['message']}"
-                
-                try:
-                    send_mail(
-                        subject,
-                        message,
-                        settings.DEFAULT_FROM_EMAIL,
-                        ['kkadzi25@gmail.com'],
-                        fail_silently=False,
-                    )
-                    logger.info(f"Contact form submitted by {cd['email']}")
-                except Exception as e:
-                    logger.error(f"Error sending contact email: {e}")
-                
-                # Redirect to avoid re-submission on page refresh
-                return redirect(reverse('pages:contact') + '?sent=1')
-    else:
-        form = EmailPostForm()
+    form = ContactForm(request.POST or None)
 
-    sent = request.GET.get('sent') == '1'
-    return render(request, 'contact.html', {'form': form, 'sent': sent})
+    if request.method == "POST" and form.is_valid():
+        cleaned_data = form.cleaned_data
+        service = cleaned_data.get("service") or "General inquiry"
+        subject = f"LLK Analytics contact: {cleaned_data['name']} ({service})"
+        message = (
+            f"Name: {cleaned_data['name']}\n"
+            f"Email: {cleaned_data['email']}\n"
+            f"Service: {service}\n\n"
+            f"Message:\n{cleaned_data['message']}"
+        )
+
+        email = EmailMessage(
+            subject=subject,
+            body=message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=settings.CONTACT_FORM_RECIPIENTS,
+            reply_to=[cleaned_data["email"]],
+        )
+
+        try:
+            email.send(fail_silently=False)
+        except Exception:
+            logger.exception(
+                "Contact form delivery failed for %s", cleaned_data["email"]
+            )
+            messages.error(
+                request,
+                "Your message could not be delivered right now. Please try again shortly.",
+            )
+        else:
+            messages.success(
+                request,
+                "Message sent successfully. Thank you for reaching out.",
+            )
+            return redirect(f"{reverse('pages:contact')}#contact")
+
+    return render(request, "contact.html", {"form": form})

@@ -1,21 +1,42 @@
-{% extends "base.html" %} 
+{% extends "base.html" %}
 
-{% block title %}Services | LLK Analytics - Data Analytics & Consulting{% endblock %}
-
-{% block meta_description %}Professional data analytics and data science consulting services. Get expert help with analytics, data strategy, SQL, Python, and machine learning projects.{% endblock %}
-
-{% block meta_keywords %}analytics consulting, data science services, data analytics, machine learning consulting, SQL optimization, Python development{% endblock %}
-
-{% block og_title %}Services | LLK Analytics - Professional Data Analytics Consulting{% endblock %}
-
-{% block og_description %}Professional data analytics, data science, and consulting services by Konrad Kadzielawa{% endblock %}
-
-{% block twitter_title %}Analytics & Data Science Services{% endblock %}
-
-{% block twitter_description %}Professional consulting services in data analytics and data science{% endblock %}
+{% block title %}Services | LLK Analytics{% endblock %}
+{% block meta_description %}Professional data analytics and data science consulting services, from BI support to Python and SQL project work.{% endblock %}
+{% block meta_keywords %}analytics consulting, data science services, SQL optimization, Python development{% endblock %}
+{% block og_title %}Services | LLK Analytics{% endblock %}
+{% block og_description %}Professional analytics, data science, and consulting services by Konrad Kadzielawa.{% endblock %}
+{% block twitter_title %}Analytics and Data Science Services{% endblock %}
+{% block twitter_description %}Professional consulting services in analytics and data science.{% endblock %}
 
 {% block content %}
+  <section class="page-section">
+    <div class="container">
+      <div class="page-intro">
+        <p class="eyebrow">Services</p>
+        <h1>Applied analytics support for teams that want faster decisions.</h1>
+        <p>
+          LLK Analytics focuses on practical data work: clearer reporting, cleaner pipelines, better BI foundations,
+          and hands-on guidance for teams building analytics capability.
+        </p>
+      </div>
 
-<p>List of relevant services...</p>
-
+      <div class="card-grid card-grid-three">
+        <article class="signal-card">
+          <span class="meta-chip">Consulting</span>
+          <h2>Analytics strategy</h2>
+          <p>Decision support, KPI design, reporting structure, and roadmap guidance grounded in actual business use.</p>
+        </article>
+        <article class="signal-card">
+          <span class="meta-chip">Delivery</span>
+          <h2>Data and BI projects</h2>
+          <p>SQL, Python, dashboards, and analysis workflows built to be useful beyond a one-off presentation.</p>
+        </article>
+        <article class="signal-card">
+          <span class="meta-chip">Enablement</span>
+          <h2>Training and coaching</h2>
+          <p>Courses, workshops, and tailored guidance for teams building confidence in analytics tools and methods.</p>
+        </article>
+      </div>
+    </div>
+  </section>
 {% endblock %}

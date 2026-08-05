@@ -1,60 +1,71 @@
-{% extends "base.html" %} 
+{% extends "base.html" %}
 
 {% block title %}{{ post.title }} | LLK Analytics Blog{% endblock %}
-
 {% block meta_description %}{{ post.body|truncatewords:30|striptags }}{% endblock %}
-
-{% block meta_keywords %}{{ post.tags|default:"analytics, data science" }}{% endblock %}
-
+{% block meta_keywords %}analytics, data science, sql, python{% endblock %}
 {% block og_title %}{{ post.title }}{% endblock %}
-
 {% block og_description %}{{ post.body|truncatewords:20|striptags }}{% endblock %}
-
 {% block og_type %}article{% endblock %}
-
 {% block twitter_title %}{{ post.title }}{% endblock %}
-
 {% block twitter_description %}{{ post.body|truncatewords:20|striptags }}{% endblock %}
 
-{% block content %} 
-
-{% block extrascripts %}
+{% block extra_head %}
   <script
     type="text/javascript"
     id="MathJax-script"
     async
     src="https://cdn.jsdelivr.net/npm/mathjax@3.0.0/es5/tex-mml-chtml.js"
   ></script>
-{% endblock extrascripts %}
+{% endblock %}
 
-<div style="max-width: 900px; margin: 0 auto; padding: 2rem;">
-  <a href="{% url 'blog:post_list' %}" style="display: inline-block; background-color: #28a745; color: white; border: none; padding: 0.75rem 1.5rem; margin-bottom: 1rem; border-radius: 4px; text-decoration: none; font-weight: bold;">Back to Blog</a>
+{% block content %}
+  <section class="page-section">
+    <div class="container article-shell">
+      <a href="{% url 'blog:post_list' %}" class="button-secondary">Back to Blog</a>
 
-  <h1 style="color: #28a745; padding: 1rem 0;">{{ post.title }}</h1>
-  <p style="color: #666; margin-bottom: 2rem;">Published {{ post.publish }} by {{ post.author }}</p>
-  
-  {{ post.body|safe|linebreaks }} 
-  
-  {% with comments.count as total_comments %}
-  <h2 style="margin-top: 2rem;">
-    {{ total_comments }} comment{{ total_comments|pluralize }}
-  </h2>
-  {% endwith %}
-  
-  {% for comment in comments %}
-  <div style="border: 1px solid #ddd; border-radius: 8px; margin: 1rem 0; padding: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-    <p style="margin: 0; padding: 1rem; background-color: #f8f9fa; border-bottom: 1px solid #ddd;">Comment {{ forloop.counter }} by {{ comment.name }} - {{ comment.created }}</p>
-    <div style="padding: 1rem;">
-      <p style="margin: 0;">
-        {{ comment.body|linebreaks }}
-      </p>
+      <article class="article-card">
+        <header class="article-header">
+          <div>
+            <p class="eyebrow">Article</p>
+            <h1>{{ post.title }}</h1>
+          </div>
+          <aside class="meta-panel">
+            <p><span>Published</span>{{ post.publish|date:"F j, Y" }}</p>
+            <p><span>Author</span>{{ post.author }}</p>
+            <p><span>Status</span>Published</p>
+          </aside>
+        </header>
+
+        <div class="rich-copy">
+          {{ post.body|safe|linebreaks }}
+        </div>
+      </article>
+
+      {% if comment %}
+        <div class="flash flash-success">Your comment has been submitted for review.</div>
+      {% endif %}
+
+      <section class="comment-section">
+        {% with comments.count as total_comments %}
+          <h2>{{ total_comments }} comment{{ total_comments|pluralize }}</h2>
+        {% endwith %}
+
+        <div class="stack-md">
+          {% for comment_item in comments %}
+            <article class="signal-card comment-card">
+              <div class="signal-card-header">
+                <span class="meta-chip">Comment {{ forloop.counter }}</span>
+                <span class="meta-rail">{{ comment_item.name }} • {{ comment_item.created|date:"M d, Y H:i" }}</span>
+              </div>
+              <div class="card-copy">{{ comment_item.body|linebreaks }}</div>
+            </article>
+          {% empty %}
+            <p>There are no comments yet.</p>
+          {% endfor %}
+        </div>
+
+        {% include "blog/post/includes/comment_form.html" %}
+      </section>
     </div>
-  </div>
-  {% empty %}
-  <p>There are no comments.</p>
-  {% endfor %}
-
-  {% include "blog/post/includes/comment_form.html" %}
-</div>
-
+  </section>
 {% endblock %}
