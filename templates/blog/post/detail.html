@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}{{ post.title }} | LLK Analytics Blog{% endblock %}
 {% block meta_description %}{{ post.body|truncatewords:30|striptags }}{% endblock %}
@@ -8,6 +9,32 @@
 {% block og_type %}article{% endblock %}
 {% block twitter_title %}{{ post.title }}{% endblock %}
 {% block twitter_description %}{{ post.body|truncatewords:20|striptags }}{% endblock %}
+
+{% block structured_data %}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "{{ post.title|escapejs }}",
+      "description": "{{ post.body|truncatewords:30|striptags|escapejs }}",
+      "datePublished": "{{ post.publish|date:'c' }}",
+      "dateModified": "{{ post.updated|date:'c' }}",
+      "author": {
+        "@type": "Person",
+        "name": "{{ post.author|escapejs }}"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "LLK Analytics",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "{{ site_url }}{% static 'img/logo.jpeg' %}"
+        }
+      },
+      "mainEntityOfPage": "{{ site_url }}{{ post.get_absolute_url }}"
+    }
+  </script>
+{% endblock %}
 
 {% block extra_head %}
   <script

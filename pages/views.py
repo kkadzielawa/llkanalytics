@@ -3,6 +3,7 @@ import logging
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import EmailMessage
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
@@ -12,7 +13,20 @@ from .forms import ContactForm
 logger = logging.getLogger(__name__)
 
 
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET", "HEAD"])
+def robots_txt(request):
+    lines = [
+        "User-agent: *",
+        "Allow: /",
+        "Disallow: /admin/",
+        "Disallow: /cart/",
+        "",
+        f"Sitemap: {settings.SITE_URL}/sitemap.xml",
+    ]
+    return HttpResponse("\n".join(lines), content_type="text/plain")
+
+
+@require_http_methods(["GET", "HEAD", "POST"])
 def contact(request):
     form = ContactForm(request.POST or None)
 

@@ -2,7 +2,11 @@
     email {$ACME_EMAIL}
 }
 
-{$SITE_DOMAIN:llkanalytics.com}, www.{$SITE_DOMAIN:llkanalytics.com} {
+www.{$SITE_DOMAIN:llkanalytics.com} {
+    redir https://{$SITE_DOMAIN:llkanalytics.com}{uri} permanent
+}
+
+{$SITE_DOMAIN:llkanalytics.com} {
     encode zstd gzip
 
     handle /static/* {

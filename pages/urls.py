@@ -11,5 +11,6 @@ urlpatterns = [
         TemplateView.as_view(template_name="services.html"),
         name="services",
     ),
+    path("robots.txt", views.robots_txt, name="robots_txt"),
     path("contact/", views.contact, name="contact"),
 ]
