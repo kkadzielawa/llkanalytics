@@ -17,6 +17,9 @@ class ContactViewTests(TestCase):
         response = self.client.get(reverse("pages:home"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "AI Engineering and Classical Machine Learning")
+        self.assertContains(response, "LLKAnalytics")
+        self.assertContains(response, '<link rel="canonical" href="http://localhost:8000/">')
+        self.assertContains(response, '"@type": "WebSite"')
 
         response = self.client.get(reverse("pages:services"))
         self.assertEqual(response.status_code, 200)
@@ -25,6 +28,17 @@ class ContactViewTests(TestCase):
         response = self.client.get(reverse("pages:contact"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Shoot me a message")
+        self.assertContains(response, "Messages go directly to Konrad Kadzielawa")
+        self.assertContains(response, "person behind LLKAnalytics")
+
+    def test_robots_txt_points_to_sitemap(self):
+        response = self.client.get(reverse("pages:robots_txt"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "text/plain")
+        self.assertContains(response, "User-agent: *")
+        self.assertContains(response, "Disallow: /admin/")
+        self.assertContains(response, "Sitemap: http://localhost:8000/sitemap.xml")
 
     def test_valid_contact_submission_sends_email(self):
         response = self.client.post(

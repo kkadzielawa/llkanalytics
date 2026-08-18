@@ -1,13 +1,32 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Home | LLK Analytics{% endblock %}
-{% block meta_description %}Discover data analytics and data science services by Konrad Kadzielawa. Read practical analytics writing and explore training opportunities.{% endblock %}
-{% block meta_keywords %}data analytics, data science, SQL, Python, machine learning, analytics services{% endblock %}
-{% block og_title %}LLK Analytics | Analytics and Data Science{% endblock %}
-{% block og_description %}Practical analytics writing, services, and training from Konrad Kadzielawa.{% endblock %}
-{% block twitter_title %}LLK Analytics{% endblock %}
-{% block twitter_description %}Analytics, data science, and practical training content.{% endblock %}
+{% block title %}LLK Analytics by Konrad Kadzielawa | AI Engineering, Machine Learning, Courses, and Services{% endblock %}
+{% block meta_description %}LLK Analytics, created by Konrad Kadzielawa, publishes practical writing, courses, and consulting services for AI engineering, applied AI, classical machine learning, and analytics systems.{% endblock %}
+{% block meta_keywords %}llkanalytics, LLK Analytics, Konrad Kadzielawa, AI engineering, applied AI, classical machine learning, machine learning courses, analytics consulting, data science services{% endblock %}
+{% block og_title %}LLK Analytics by Konrad Kadzielawa | AI Engineering and Classical Machine Learning{% endblock %}
+{% block og_description %}Practical blog posts, courses, and services from Konrad Kadzielawa for AI engineering, applied AI, classical machine learning, and analytics systems.{% endblock %}
+{% block twitter_title %}LLK Analytics by Konrad Kadzielawa{% endblock %}
+{% block twitter_description %}Blog posts, courses, and services from Konrad Kadzielawa for applied AI, AI engineering, machine learning, and analytics.{% endblock %}
+
+{% block structured_data %}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "llkanalytics",
+      "alternateName": [
+        "llkanalytics",
+        "LLKAnalytics"
+      ],
+      "url": "{{ site_url }}",
+      "description": "llkanalytics publishes practical blog posts, courses, and services for AI engineering, applied AI, classical machine learning, and analytics systems.",
+      "publisher": {
+        "@id": "{{ site_url }}/#organization"
+      }
+    }
+  </script>
+{% endblock %}
 
 {% block content %}
   <section class="hero hero-home">
@@ -19,10 +38,11 @@
         </div>
       </div>
       <div class="hero-copy">
-        <p class="eyebrow">AI Console</p>
-        <h2>AI Engineering and Classical Machine Learning</h2>
+        <p class="eyebrow">LLKAnalytics</p>
+        <h1>AI Engineering and Classical Machine Learning</h1>
         <p class="hero-text">
-          LLK Analytics is organized around three connected tracks. The blog is where I break down applied AI, AI engineering workflows, classic machine learning ideas, and the analytics decisions that make them useful in real work.
+          LLKAnalytics is organized around three connected tracks: writing, courses, and services around applied AI, AI engineering, classical machine learning, and analytics systems.
+          The blog is where I break down AI engineering workflows, classic machine learning ideas, and the analytics decisions that make them useful in real work.
           The courses section turns those topics into guided learning for practitioners who want hands-on skill building in modern AI systems as well as foundational modeling and data work.
           The services section is for teams that want help designing, building, or improving AI-enabled analytics, machine learning, and decision-support systems.
         </p>
