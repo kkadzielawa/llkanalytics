@@ -16,10 +16,7 @@ class ContactViewTests(TestCase):
     def test_public_pages_render(self):
         response = self.client.get(reverse("pages:home"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(
-            response,
-            "One place for AI writing, AI engineering learning, and practical machine learning services.",
-        )
+        self.assertContains(response, "AI Engineering and Classical Machine Learning")
 
         response = self.client.get(reverse("pages:services"))
         self.assertEqual(response.status_code, 200)
