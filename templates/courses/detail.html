@@ -10,6 +10,23 @@
 {% block twitter_title %}{{ course.name }}{% endblock %}
 {% block twitter_description %}{{ course.description|truncatewords:20|striptags }}{% endblock %}
 
+{% block structured_data %}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      "name": "{{ course.name|escapejs }}",
+      "description": "{{ course.description|truncatewords:40|striptags|escapejs }}",
+      "provider": {
+        "@type": "Organization",
+        "name": "LLK Analytics",
+        "url": "{{ site_url }}"
+      },
+      "url": "{{ site_url }}{{ course.get_absolute_url }}"
+    }
+  </script>
+{% endblock %}
+
 {% block content %}
   <section class="page-section">
     <div class="container article-shell">
