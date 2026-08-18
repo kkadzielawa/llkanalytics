@@ -7,6 +7,7 @@ from courses.models import Course
 class PostSitemap(Sitemap):
     changefreq = "weekly"
     priority = 0.9
+    protocol = "https"
 
     def items(self):
         return Post.published.all()
@@ -18,6 +19,7 @@ class PostSitemap(Sitemap):
 class CourseSitemap(Sitemap):
     changefreq = "monthly"
     priority = 0.8
+    protocol = "https"
 
     def items(self):
         return Course.objects.filter(available=True)
@@ -29,6 +31,7 @@ class CourseSitemap(Sitemap):
 class StaticSitemap(Sitemap):
     changefreq = "monthly"
     priority = 0.7
+    protocol = "https"
 
     def items(self):
         return ["pages:home", "pages:services", "pages:contact", "blog:post_list", "courses:course_list"]
