@@ -37,18 +37,23 @@ def post_detail(request, year, month, day, post):
 def post_comment(request, post_id):
     post_obj = get_object_or_404(Post.published, id=post_id)
     comment = None
-    form = CommentForm(data=request.POST)
+    form_data = request.POST.copy()
+    if getattr(request.user, "is_authenticated", False):
+        full_name = request.user.get_full_name().strip() or getattr(
+            request.user, "username", ""
+        )
+        if full_name.lower() in {"kkadzielawa", "konrad"}:
+            full_name = "Konrad Kadzielawa"
+        form_data["name"] = full_name
+
+        user_email = getattr(request.user, "email", "")
+        if user_email:
+            form_data["email"] = user_email
+
+    form = CommentForm(data=form_data)
     if form.is_valid():
         comment = form.save(commit=False)
         comment.post = post_obj
-        if getattr(request.user, "is_authenticated", False):
-            full_name = request.user.get_full_name() or getattr(
-                request.user, "username", ""
-            )
-            comment.name = full_name
-            user_email = getattr(request.user, "email", "")
-            if user_email:
-                comment.email = user_email
         comment.save()
     comments = post_obj.comments.filter(active=True)
     return render(

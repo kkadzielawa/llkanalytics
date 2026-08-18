@@ -21,7 +21,7 @@
       "dateModified": "{{ post.updated|date:'c' }}",
       "author": {
         "@type": "Person",
-        "name": "{{ post.author|escapejs }}"
+        "name": "{{ post.author_display_name|escapejs }}"
       },
       "publisher": {
         "@type": "Organization",
@@ -47,8 +47,8 @@
 
 {% block content %}
   <section class="page-section">
-    <div class="container article-shell">
-      <a href="{% url 'blog:post_list' %}" class="button-secondary">Back to Blog</a>
+    <div class="container article-shell article-shell-wide">
+      <a href="{% url 'blog:post_list' %}" class="button-secondary article-back-link">Back to Blog</a>
 
       <article class="article-card">
         <header class="article-header">
@@ -58,7 +58,7 @@
           </div>
           <aside class="meta-panel">
             <p><span>Published</span>{{ post.publish|date:"F j, Y" }}</p>
-            <p><span>Author</span>{{ post.author }}</p>
+            <p><span>Author</span>{{ post.author_display_name }}</p>
             <p><span>Status</span>Published</p>
           </aside>
         </header>

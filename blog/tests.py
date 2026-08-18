@@ -15,7 +15,7 @@ class BlogModelAndViewTests(TestCase):
     def setUpTestData(cls):
         user_model = get_user_model()
         cls.author = user_model.objects.create_user(
-            username="konrad",
+            username="kkadzielawa",
             email="konrad@example.com",
             password="testpass123",
         )
@@ -79,6 +79,17 @@ class BlogModelAndViewTests(TestCase):
         self.assertIn("/blog/", absolute_url)
         self.assertIn("/published-analytics-post/", absolute_url)
 
+    def test_public_author_display_uses_full_name_for_site_owner(self):
+        self.assertEqual(self.published_post.author_display_name, "Konrad Kadzielawa")
+
+        response = self.client.get(reverse("blog:post_list"))
+        self.assertContains(response, "By Konrad Kadzielawa")
+        self.assertNotContains(response, "By kkadzielawa")
+
+        response = self.client.get(self.published_post.get_absolute_url())
+        self.assertContains(response, "<span>Author</span>Konrad Kadzielawa")
+        self.assertNotContains(response, "<span>Author</span>kkadzielawa")
+
     def test_comment_ordering_and_active_visibility(self):
         comments = list(self.published_post.comments.order_by("created"))
         self.assertEqual(comments[0], self.active_comment)
@@ -86,6 +97,72 @@ class BlogModelAndViewTests(TestCase):
         response = self.client.get(self.published_post.get_absolute_url())
         self.assertContains(response, "First active comment")
         self.assertNotContains(response, "Second hidden comment")
+        self.assertContains(response, 'class="comment-textarea"')
+        self.assertContains(response, "Spam protection is enabled")
+
+    def test_comment_requires_name_before_saving(self):
+        comment_count = Comment.objects.count()
+
+        response = self.client.post(
+            reverse("blog:post_comment", args=[self.published_post.id]),
+            data={
+                "name": "",
+                "email": "reader@example.com",
+                "body": "This comment has no name.",
+                "company_website": "",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Comment.objects.count(), comment_count)
+        self.assertContains(response, "This field is required")
+
+    def test_comment_honeypot_blocks_spam_without_saving(self):
+        comment_count = Comment.objects.count()
+
+        response = self.client.post(
+            reverse("blog:post_comment", args=[self.published_post.id]),
+            data={
+                "name": "Spam Bot",
+                "email": "bot@example.com",
+                "body": "Buy spam links now.",
+                "company_website": "https://spam.example.com",
+            },
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(Comment.objects.count(), comment_count)
+
+    def test_authenticated_user_without_email_can_comment_with_entered_email(self):
+        self.author.email = ""
+        self.author.save(update_fields=["email"])
+        self.client.force_login(self.author)
+
+        response = self.client.get(self.published_post.get_absolute_url())
+        self.assertContains(response, 'name="email"')
+
+        response = self.client.post(
+            reverse("blog:post_comment", args=[self.published_post.id]),
+            data={
+                "email": "reader@example.com",
+                "body": "This authenticated comment should appear.",
+                "company_website": "",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Your comment has been submitted for review")
+        self.assertContains(response, "Konrad Kadzielawa")
+        self.assertContains(response, "This authenticated comment should appear.")
+        self.assertTrue(
+            Comment.objects.filter(
+                post=self.published_post,
+                name="Konrad Kadzielawa",
+                email="reader@example.com",
+                body="This authenticated comment should appear.",
+                active=True,
+            ).exists()
+        )
 
     def test_blog_list_gracefully_handles_invalid_pagination(self):
         response = self.client.get(reverse("blog:post_list"), {"page": "invalid"})
