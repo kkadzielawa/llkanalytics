@@ -49,6 +49,15 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
+    @property
+    def author_display_name(self):
+        full_name = self.author.get_full_name().strip()
+        if full_name:
+            return full_name
+        if self.author.username.lower() in {"kkadzielawa", "konrad"}:
+            return "Konrad Kadzielawa"
+        return self.author.username
+
     def get_absolute_url(self):
         return reverse(
             "blog:post_detail",
