@@ -11,12 +11,14 @@
 
     {% if user.is_authenticated %}
       <input type="hidden" name="name" value="{{ user.get_full_name|default:user.username }}">
-      <input type="hidden" name="email" value="{{ user.email }}">
+      {% if user.email %}
+        <input type="hidden" name="email" value="{{ user.email }}">
+      {% endif %}
     {% endif %}
 
     {% for field in form %}
-      {% if not user.is_authenticated or field.name != 'name' and field.name != 'email' %}
-        <div class="field-group">
+      {% if not user.is_authenticated or field.name != 'name' and field.name != 'email' or field.name == 'email' and not user.email %}
+        <div class="field-group{% if field.errors %} has-error{% endif %}">
           <label for="{{ field.id_for_label }}">{{ field.label }}</label>
           {{ field }}
           {% if field.errors %}
@@ -27,6 +29,7 @@
     {% endfor %}
 
     {% render_honeypot_field %}
+    <p class="field-help">Spam protection is enabled. Your name is required before commenting.</p>
     <button type="submit" class="button-primary">Add comment</button>
   </form>
 </section>

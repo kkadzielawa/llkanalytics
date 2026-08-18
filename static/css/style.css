@@ -473,6 +473,18 @@ button[type="submit"]:hover {
     width: min(calc(100% - 2rem), 960px);
 }
 
+.article-shell-wide {
+    width: min(calc(100% - 2rem), var(--container));
+}
+
+.article-back-link {
+    justify-self: start;
+    width: fit-content;
+    min-height: 38px;
+    padding: 0.55rem 0.95rem;
+    font-size: 0.9rem;
+}
+
 .article-card {
     padding: 2rem;
 }
@@ -548,6 +560,8 @@ button[type="submit"]:hover {
 .comment-section {
     display: grid;
     gap: 1.5rem;
+    width: min(100%, calc(var(--container) / 2));
+    justify-self: center;
 }
 
 .comment-card p:last-child {
@@ -643,6 +657,12 @@ select option {
 textarea {
     min-height: 220px;
     resize: vertical;
+}
+
+.comment-section textarea,
+textarea.comment-textarea {
+    height: 110px;
+    min-height: 110px;
 }
 
 .field-error,

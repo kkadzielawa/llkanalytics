@@ -20,10 +20,10 @@
 
 {% block content %}
   <section class="page-section">
-    <div class="container reading-width">
+    <div class="container article-shell article-shell-wide">
       <div class="page-intro">
         <p class="eyebrow">Blog</p>
-        <h1>Applied analytics notes, tutorials, and working ideas.</h1>
+        <h1>AI Research and Implementation Ideas</h1>
       </div>
 
       <div class="stack-lg">
@@ -31,7 +31,7 @@
           <article class="signal-card signal-card-blog">
             <div class="signal-card-header">
               <span class="meta-chip">{{ post.publish|date:"M d, Y" }}</span>
-              <span class="meta-rail">By {{ post.author }}</span>
+              <span class="meta-rail">By {{ post.author_display_name }}</span>
             </div>
             <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
             <div class="card-copy">
