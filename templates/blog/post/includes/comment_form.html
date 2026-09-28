@@ -28,8 +28,12 @@
       {% endif %}
     {% endfor %}
 
+    {% if form.non_field_errors %}
+      <div class="field-error field-error-global">{{ form.non_field_errors|join:", " }}</div>
+    {% endif %}
+
     {% render_honeypot_field %}
-    <p class="field-help">Spam protection is enabled. Your name is required before commenting.</p>
+    <p class="field-help">Comments are moderated before publication. Spam protection is enabled, and your name is required.</p>
     <button type="submit" class="button-primary">Add comment</button>
   </form>
 </section>

@@ -143,6 +143,24 @@ default_database.setdefault("CONN_MAX_AGE", int(os.getenv("DB_CONN_MAX_AGE", "60
 default_database.setdefault("CONN_HEALTH_CHECKS", True)
 DATABASES = {"default": default_database}
 
+# Contact-form throttling must be shared by Gunicorn workers in production.
+# A file-backed cache works across workers without requiring another service;
+# tests and local development keep the isolated in-memory default.
+if DEBUG or IS_TEST:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "llkanalytics-local",
+        }
+    }
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+            "LOCATION": os.getenv("CACHE_LOCATION", "/tmp/llkanalytics-cache"),
+        }
+    }
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -209,6 +227,7 @@ CONTACT_FORM_RECIPIENTS = env_list("CONTACT_FORM_RECIPIENTS", [DEFAULT_FROM_EMAI
 
 HONEYPOT_FIELD_NAME = "company_website"
 HONEYPOT_VALUE = ""
+CONTACT_FORM_MIN_SECONDS = float(os.getenv("CONTACT_FORM_MIN_SECONDS", "3"))
 
 SECURE_SSL_REDIRECT = env_bool("SECURE_SSL_REDIRECT", not DEBUG)
 SESSION_COOKIE_SECURE = env_bool("SESSION_COOKIE_SECURE", not DEBUG)
