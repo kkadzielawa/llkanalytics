@@ -4,6 +4,16 @@ from django_summernote.admin import SummernoteModelAdmin
 from .models import Comment, Post
 
 
+@admin.action(description="Approve selected comments")
+def approve_comments(modeladmin, request, queryset):
+    queryset.update(active=True)
+
+
+@admin.action(description="Hide selected comments")
+def hide_comments(modeladmin, request, queryset):
+    queryset.update(active=False)
+
+
 @admin.register(Post)
 class PostAdmin(SummernoteModelAdmin):
     list_display = ["title", "slug", "author", "publish", "status"]
@@ -23,3 +33,4 @@ class CommentAdmin(admin.ModelAdmin):
     search_fields = ["name", "email", "body"]
     list_select_related = ["post"]
     ordering = ["created"]
+    actions = [approve_comments, hide_comments]

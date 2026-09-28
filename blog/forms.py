@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 from .models import Comment
 
@@ -37,3 +39,16 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ["name", "email", "body"]
+
+    def clean_body(self):
+        body = self.cleaned_data["body"].strip()
+        # A normal reader may include a useful reference link, but a comment
+        # containing a large number of links is almost always SEO spam.
+        link_count = len(
+            re.findall(r"(?:https?://|www\.)", body, flags=re.IGNORECASE)
+        )
+        if link_count > 2:
+            raise forms.ValidationError(
+                "Please remove extra links from your comment before submitting."
+            )
+        return body

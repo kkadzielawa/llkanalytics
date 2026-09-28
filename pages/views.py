@@ -1,7 +1,9 @@
 import logging
+from hashlib import sha256
 
 from django.conf import settings
 from django.contrib import messages
+from django.core.cache import cache
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -11,6 +13,31 @@ from django.views.decorators.http import require_http_methods
 from .forms import ContactForm
 
 logger = logging.getLogger(__name__)
+
+CONTACT_RATE_LIMIT = 3
+CONTACT_RATE_WINDOW = 15 * 60
+
+
+def _client_ip(request):
+    forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR", "")
+    if forwarded_for:
+        return forwarded_for.split(",", 1)[0].strip()
+    return request.META.get("REMOTE_ADDR", "").strip()
+
+
+def _contact_rate_limited(request):
+    client_ip = _client_ip(request)
+    if not client_ip:
+        return False
+    key = "contact-submit:" + sha256(
+        f"{settings.SECRET_KEY}:{client_ip}".encode("utf-8")
+    ).hexdigest()
+    try:
+        attempts = cache.incr(key)
+    except ValueError:
+        cache.add(key, 1, timeout=CONTACT_RATE_WINDOW)
+        attempts = 1
+    return attempts > CONTACT_RATE_LIMIT
 
 
 @require_http_methods(["GET", "HEAD"])
@@ -31,6 +58,13 @@ def contact(request):
     form = ContactForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
+        if _contact_rate_limited(request):
+            form.add_error(
+                None,
+                "Too many messages were submitted recently. Please wait a few minutes before trying again.",
+            )
+            return render(request, "contact.html", {"form": form})
+
         cleaned_data = form.cleaned_data
         service = cleaned_data.get("service") or "General inquiry"
         subject = f"LLK Analytics contact: {cleaned_data['name']} ({service})"

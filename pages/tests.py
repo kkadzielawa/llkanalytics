@@ -3,6 +3,8 @@ from unittest.mock import patch
 from django.contrib.messages import get_messages
 from django.core import mail
 from django.test import TestCase, override_settings
+
+from .forms import ContactForm
 from django.urls import reverse
 
 
@@ -11,8 +13,12 @@ from django.urls import reverse
     CONTACT_FORM_RECIPIENTS=["owner@example.com", "team@example.com"],
     DEFAULT_FROM_EMAIL="hello@llkanalytics.com",
     SECURE_SSL_REDIRECT=False,
+    CONTACT_FORM_MIN_SECONDS=0,
 )
 class ContactViewTests(TestCase):
+    def contact_token(self):
+        return ContactForm().initial["form_token"]
+
     def test_public_pages_render(self):
         response = self.client.get(reverse("pages:home"))
         self.assertEqual(response.status_code, 200)
@@ -49,6 +55,7 @@ class ContactViewTests(TestCase):
                 "service": "analytics-consulting",
                 "message": "I would like help scoping an analytics roadmap.",
                 "website": "",
+                "form_token": self.contact_token(),
             },
         )
 
@@ -62,6 +69,39 @@ class ContactViewTests(TestCase):
         self.assertEqual(mail.outbox[0].reply_to, ["ada@example.com"])
         self.assertIn("analytics-consulting", mail.outbox[0].subject)
 
+    def test_contact_form_requires_signed_token(self):
+        response = self.client.post(
+            reverse("pages:contact"),
+            data={
+                "name": "Bot",
+                "email": "bot@example.com",
+                "service": "",
+                "message": "This message has no signed form token.",
+                "website": "",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 0)
+        self.assertContains(response, "Please review the highlighted fields and try again.")
+
+    def test_contact_message_with_many_links_sends_no_email(self):
+        response = self.client.post(
+            reverse("pages:contact"),
+            data={
+                "name": "Promoter",
+                "email": "promoter@example.com",
+                "service": "",
+                "message": "https://one.example https://two.example https://three.example",
+                "website": "",
+                "form_token": self.contact_token(),
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 0)
+        self.assertContains(response, "Please remove extra links")
+
     def test_invalid_contact_submission_sends_no_email(self):
         response = self.client.post(
             reverse("pages:contact"),
@@ -71,6 +111,7 @@ class ContactViewTests(TestCase):
                 "service": "",
                 "message": "Too short",
                 "website": "",
+                "form_token": self.contact_token(),
             },
         )
 
@@ -87,6 +128,7 @@ class ContactViewTests(TestCase):
                 "service": "",
                 "message": "This looks like spam content but should not send.",
                 "website": "https://spam.example.com",
+                "form_token": self.contact_token(),
             },
         )
 
@@ -103,6 +145,7 @@ class ContactViewTests(TestCase):
                     "service": "training-course",
                     "message": "I want to discuss a private training session for our team.",
                     "website": "",
+                "form_token": self.contact_token(),
                 },
             )
 

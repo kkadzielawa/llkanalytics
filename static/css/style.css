@@ -619,6 +619,19 @@ button[type="submit"]:hover {
     color: var(--surface);
 }
 
+/* Keep the contact-form honeypot out of sight and out of the tab order,
+   while leaving it present for bots that fill every text input. */
+.honeypot-field {
+    position: absolute !important;
+    left: -10000px !important;
+    top: auto !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
 input[type="text"],
 input[type="email"],
 input[type="search"],
