@@ -72,12 +72,21 @@ class Comment(models.Model):
     body = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    active = models.BooleanField(default=True)
+    # Comments are moderated before they become public. A bot cannot publish
+    # directly even if it bypasses the honeypot and form validation.
+    active = models.BooleanField(default=False)
+    # Store a keyed hash rather than a raw IP address so we can throttle bursts
+    # without retaining visitors' network addresses in the database.
+    submitter_hash = models.CharField(max_length=64, blank=True, default="", db_index=True)
 
     class Meta:
         ordering = ["created"]
         indexes = [
             models.Index(fields=["created"], name="blog_comment_created_idx"),
+            models.Index(
+                fields=["submitter_hash", "created"],
+                name="blog_comment_submitter_idx",
+            ),
         ]
 
     def __str__(self):

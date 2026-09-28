@@ -117,6 +117,41 @@ class BlogModelAndViewTests(TestCase):
         self.assertEqual(Comment.objects.count(), comment_count)
         self.assertContains(response, "This field is required")
 
+    def test_new_comments_are_pending_moderation(self):
+        response = self.client.post(
+            reverse("blog:post_comment", args=[self.published_post.id]),
+            data={
+                "name": "Thoughtful Reader",
+                "email": "reader3@example.com",
+                "body": "A useful question about this implementation.",
+                "company_website": "",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        pending = Comment.objects.get(name="Thoughtful Reader")
+        self.assertFalse(pending.active)
+        self.assertContains(response, "submitted for review")
+        self.assertNotContains(
+            response,
+            'class="card-copy">A useful question about this implementation.',
+        )
+
+    def test_comment_with_many_links_is_rejected(self):
+        response = self.client.post(
+            reverse("blog:post_comment", args=[self.published_post.id]),
+            data={
+                "name": "Promoter",
+                "email": "promoter@example.com",
+                "body": "Buy https://one.example https://two.example https://three.example",
+                "company_website": "",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Please remove extra links")
+        self.assertFalse(Comment.objects.filter(name="Promoter").exists())
+
     def test_comment_honeypot_blocks_spam_without_saving(self):
         comment_count = Comment.objects.count()
 
@@ -153,14 +188,14 @@ class BlogModelAndViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Your comment has been submitted for review")
         self.assertContains(response, "Konrad Kadzielawa")
-        self.assertContains(response, "This authenticated comment should appear.")
+        self.assertNotContains(response, 'class="card-copy">This authenticated comment should appear.')
         self.assertTrue(
             Comment.objects.filter(
                 post=self.published_post,
                 name="Konrad Kadzielawa",
                 email="reader@example.com",
                 body="This authenticated comment should appear.",
-                active=True,
+                active=False,
             ).exists()
         )
 

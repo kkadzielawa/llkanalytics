@@ -73,6 +73,9 @@
           </div>
 
           {{ form.website }}
+          {{ form.form_token }}
+
+          <p class="field-help">Spam protection is enabled. Please send one thoughtful inquiry at a time.</p>
 
           <div aria-live="polite" class="form-status">
             {% if form.errors %}

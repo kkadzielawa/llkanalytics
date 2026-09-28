@@ -1,10 +1,33 @@
+from datetime import timedelta
+from hashlib import sha256
+
+from django.conf import settings
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, render
+from django.utils import timezone
 from django.views.decorators.http import require_POST
 from honeypot.decorators import check_honeypot
 
 from .forms import CommentForm
-from .models import Post
+from .models import Comment, Post
+
+
+COMMENT_RATE_WINDOW = timedelta(minutes=10)
+COMMENT_RATE_LIMIT = 3
+
+
+def _client_ip(request):
+    forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR", "")
+    if forwarded_for:
+        return forwarded_for.split(",", 1)[0].strip()
+    return request.META.get("REMOTE_ADDR", "").strip()
+
+
+def _submitter_hash(request):
+    client_ip = _client_ip(request)
+    if not client_ip:
+        return ""
+    return sha256(f"{settings.SECRET_KEY}:{client_ip}".encode("utf-8")).hexdigest()
 
 
 def post_list(request):
@@ -51,9 +74,24 @@ def post_comment(request, post_id):
             form_data["email"] = user_email
 
     form = CommentForm(data=form_data)
-    if form.is_valid():
+    submitter_hash = _submitter_hash(request)
+    recent_comments = 0
+    if submitter_hash:
+        recent_comments = Comment.objects.filter(
+            submitter_hash=submitter_hash,
+            created__gte=timezone.now() - COMMENT_RATE_WINDOW,
+        ).count()
+
+    if recent_comments >= COMMENT_RATE_LIMIT:
+        form.add_error(
+            None,
+            "You have submitted several comments recently. Please wait a few minutes before trying again.",
+        )
+    elif form.is_valid():
         comment = form.save(commit=False)
         comment.post = post_obj
+        comment.active = False
+        comment.submitter_hash = submitter_hash
         comment.save()
     comments = post_obj.comments.filter(active=True)
     return render(
