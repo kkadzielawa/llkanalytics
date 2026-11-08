@@ -25,7 +25,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-    <link href="{% static 'css/style.css' %}?v=20260818-spam-protection" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}?v=20261108" rel="stylesheet">
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -51,6 +51,7 @@
     {% block extra_head %}{% endblock %}
   </head>
   <body class="site-body">
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-header">
       <div class="container nav-shell">
         <a href="{% url 'pages:home' %}" class="brand" aria-label="LLK Analytics home">
@@ -61,6 +62,7 @@
           id="navToggle"
           class="nav-toggle"
           type="button"
+          hidden
           aria-expanded="false"
           aria-controls="navMenu"
         >
@@ -76,7 +78,7 @@
       </div>
     </header>
 
-    <main class="site-main">
+    <main class="site-main" id="main-content" tabindex="-1">
       <div class="container">
         {% if messages %}
           <div class="message-stack" aria-live="polite">
@@ -106,9 +108,28 @@
       const navMenu = document.getElementById("navMenu");
 
       if (navToggle && navMenu) {
+        navToggle.hidden = false;
+        navMenu.classList.add("is-collapsible");
+        navMenu.querySelector(".is-active")?.setAttribute("aria-current", "page");
+        const closeMenu = () => {
+          navMenu.classList.remove("is-open");
+          navToggle.setAttribute("aria-expanded", "false");
+        };
         navToggle.addEventListener("click", () => {
           const isOpen = navMenu.classList.toggle("is-open");
           navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        });
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && navMenu.classList.contains("is-open")) {
+            closeMenu();
+            navToggle.focus();
+          }
+        });
+        document.addEventListener("click", (event) => {
+          if (!navMenu.contains(event.target) && !navToggle.contains(event.target)) closeMenu();
+        });
+        navMenu.addEventListener("click", (event) => {
+          if (event.target.closest("a")) closeMenu();
         });
       }
     </script>

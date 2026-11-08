@@ -3,6 +3,10 @@ import sys
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
+from django.core.exceptions import ImproperlyConfigured
+
+from .security import staff_upload_allowed
+
 try:
     import dj_database_url
 except ImportError:  # pragma: no cover - fallback for environments without the package yet
@@ -74,6 +78,8 @@ def database_config_from_url(database_url):
 
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-llkanalytics-dev-key")
 DEBUG = env_bool("DEBUG", True)
+if not DEBUG and SECRET_KEY in {"django-insecure-llkanalytics-dev-key", "replace-me", ""}:
+    raise ImproperlyConfigured("Set a unique SECRET_KEY before running in production.")
 ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", ["localhost", "127.0.0.1"])
 CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS", [])
 SITE_URL = os.getenv("SITE_URL", "http://localhost:8000").rstrip("/")
@@ -90,8 +96,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     "django.contrib.sitemaps",
-    "django_summernote",
-    "honeypot",
+    "llkanalytics.apps.SummernoteConfig",
     "blog.apps.BlogConfig",
     "courses.apps.CoursesConfig",
     "pages.apps.PagesConfig",
@@ -143,9 +148,7 @@ default_database.setdefault("CONN_MAX_AGE", int(os.getenv("DB_CONN_MAX_AGE", "60
 default_database.setdefault("CONN_HEALTH_CHECKS", True)
 DATABASES = {"default": default_database}
 
-# Contact-form throttling must be shared by Gunicorn workers in production.
-# A file-backed cache works across workers without requiring another service;
-# tests and local development keep the isolated in-memory default.
+# Public form limits use database row locks, independent of this general cache.
 if DEBUG or IS_TEST:
     CACHES = {
         "default": {
@@ -184,6 +187,11 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+# Use installed admin/editor assets before legacy collected copies in static/.
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+]
 MEDIA_URL = "/media/"
 MEDIA_ROOT = Path(os.getenv("MEDIA_ROOT", str(BASE_DIR / "media")))
 
@@ -225,9 +233,21 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "hello@llkanalytics.com")
 CONTACT_FORM_RECIPIENTS = env_list("CONTACT_FORM_RECIPIENTS", [DEFAULT_FROM_EMAIL])
 
-HONEYPOT_FIELD_NAME = "company_website"
-HONEYPOT_VALUE = ""
+SUMMERNOTE_CONFIG = {
+    "attachment_require_authentication": True,
+    "test_func_upload_view": staff_upload_allowed,
+}
 CONTACT_FORM_MIN_SECONDS = float(os.getenv("CONTACT_FORM_MIN_SECONDS", "3"))
+COMMENT_FORM_MIN_SECONDS = float(os.getenv("COMMENT_FORM_MIN_SECONDS", "3"))
+FORM_TOKEN_MAX_AGE = 24 * 60 * 60
+FORM_RATE_WINDOW_SECONDS = 15 * 60
+FORM_ATTEMPT_LIMIT = 10
+FORM_SUBMISSION_LIMIT = 3
+TRUST_PROXY_CLIENT_IP = env_bool("TRUST_PROXY_CLIENT_IP", False)
+
+# The public forms accept text only. Keep uploads available to the rich-text admin.
+DATA_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 100
 
 SECURE_SSL_REDIRECT = env_bool("SECURE_SSL_REDIRECT", not DEBUG)
 SESSION_COOKIE_SECURE = env_bool("SESSION_COOKIE_SECURE", not DEBUG)

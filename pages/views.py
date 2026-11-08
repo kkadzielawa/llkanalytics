@@ -1,43 +1,18 @@
 import logging
-from hashlib import sha256
 
 from django.conf import settings
 from django.contrib import messages
-from django.core.cache import cache
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.cache import never_cache
 
 from .forms import ContactForm
+from .antispam import release_token, reserve_token, submission_limit
 
 logger = logging.getLogger(__name__)
-
-CONTACT_RATE_LIMIT = 3
-CONTACT_RATE_WINDOW = 15 * 60
-
-
-def _client_ip(request):
-    forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR", "")
-    if forwarded_for:
-        return forwarded_for.split(",", 1)[0].strip()
-    return request.META.get("REMOTE_ADDR", "").strip()
-
-
-def _contact_rate_limited(request):
-    client_ip = _client_ip(request)
-    if not client_ip:
-        return False
-    key = "contact-submit:" + sha256(
-        f"{settings.SECRET_KEY}:{client_ip}".encode("utf-8")
-    ).hexdigest()
-    try:
-        attempts = cache.incr(key)
-    except ValueError:
-        cache.add(key, 1, timeout=CONTACT_RATE_WINDOW)
-        attempts = 1
-    return attempts > CONTACT_RATE_LIMIT
 
 
 @require_http_methods(["GET", "HEAD"])
@@ -53,17 +28,30 @@ def robots_txt(request):
     return HttpResponse("\n".join(lines), content_type="text/plain")
 
 
+@never_cache
 @require_http_methods(["GET", "HEAD", "POST"])
 def contact(request):
-    form = ContactForm(request.POST or None)
+    form = ContactForm(request.POST if request.method == "POST" else None)
+    status = 200
+    retry = submission_limit(request, "contact") if request.method == "POST" else 0
 
-    if request.method == "POST" and form.is_valid():
-        if _contact_rate_limited(request):
+    if retry:
+        form.add_error(None, "Too many attempts. Please try again in 15 minutes.")
+        status = 429
+    elif request.method == "POST" and form.is_valid():
+        retry = submission_limit(request, "contact", form.cleaned_data["email"])
+        if retry:
             form.add_error(
                 None,
                 "Too many messages were submitted recently. Please wait a few minutes before trying again.",
             )
-            return render(request, "contact.html", {"form": form})
+            response = render(request, "contact.html", {"form": form}, status=429)
+            response["Retry-After"] = str(retry)
+            return response
+
+        if reserve_token(form):
+            form.add_error(None, "This message was already submitted. Please reload the form before sending another.")
+            return render(request, "contact.html", {"form": form}, status=409)
 
         cleaned_data = form.cleaned_data
         service = cleaned_data.get("service") or "General inquiry"
@@ -84,11 +72,12 @@ def contact(request):
         )
 
         try:
-            email.send(fail_silently=False)
+            if email.send(fail_silently=False) != 1:
+                raise RuntimeError("Email backend did not accept the contact message")
         except Exception:
-            logger.exception(
-                "Contact form delivery failed for %s", cleaned_data["email"]
-            )
+            release_token(form)
+            status = 503
+            logger.exception("Contact form delivery failed")
             messages.error(
                 request,
                 "Your message could not be delivered right now. Please try again shortly.",
@@ -100,4 +89,7 @@ def contact(request):
             )
             return redirect(f"{reverse('pages:contact')}#contact")
 
-    return render(request, "contact.html", {"form": form})
+    response = render(request, "contact.html", {"form": form}, status=status)
+    if retry:
+        response["Retry-After"] = str(retry)
+    return response

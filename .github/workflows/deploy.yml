@@ -54,6 +54,11 @@ jobs:
       - name: Check migrations
         run: python manage.py makemigrations blog courses pages cart --check --dry-run
 
+      - name: Audit dependencies
+        run: |
+          pip install pip-audit
+          pip-audit -r requirements.txt --progress-spinner off
+
       - name: Apply migrations
         run: python manage.py migrate --noinput
 

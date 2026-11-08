@@ -136,7 +136,7 @@ class ContactViewTests(TestCase):
         self.assertEqual(len(mail.outbox), 0)
 
     def test_delivery_failure_renders_error(self):
-        with patch("pages.views.EmailMessage.send", side_effect=RuntimeError("smtp down")):
+        with patch("pages.views.EmailMessage.send", side_effect=RuntimeError("smtp down")), self.assertLogs("pages.views", level="ERROR"):
             response = self.client.post(
                 reverse("pages:contact"),
                 data={
@@ -145,11 +145,11 @@ class ContactViewTests(TestCase):
                     "service": "training-course",
                     "message": "I want to discuss a private training session for our team.",
                     "website": "",
-                "form_token": self.contact_token(),
+                    "form_token": self.contact_token(),
                 },
             )
 
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "could not be delivered")
+        self.assertEqual(response.status_code, 503)
+        self.assertContains(response, "could not be delivered", status_code=503)
         messages = [message.message for message in get_messages(response.wsgi_request)]
         self.assertTrue(any("could not be delivered" in message for message in messages))

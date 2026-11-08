@@ -1,13 +1,12 @@
 asgiref==3.8.1
 beautifulsoup4==4.12.3
-Django==4.2.23
+Django==5.2.19
 dj-database-url==2.2.0
-django-honeypot
 django-summernote==0.8.20.0
 gunicorn==22.0.0
 pillow
 psycopg[binary]==3.2.1
-python-dotenv==1.0.1
-soupsieve==2.6
-sqlparse==0.5.2
+python-dotenv==1.2.2
+soupsieve==2.9.0
+sqlparse==0.6.0
 whitenoise
