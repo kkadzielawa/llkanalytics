@@ -6,7 +6,7 @@ from unittest.mock import patch
 from django.core import mail
 from django.contrib.auth import get_user_model
 from django.contrib.staticfiles import finders
-from django.db import close_old_connections
+from django.db import close_old_connections, connections
 from django.test import Client, RequestFactory, TestCase, TransactionTestCase
 from django.test import override_settings, skipUnlessDBFeature
 from django.urls import reverse
@@ -139,7 +139,10 @@ class ConcurrentThrottleTests(TransactionTestCase):
             try:
                 return consume_limit("concurrent", "192.0.2.1", 3, 900)
             finally:
-                close_old_connections()
+                # `close_old_connections()` keeps healthy PostgreSQL sessions
+                # open. Close worker-thread connections so test DB teardown can
+                # drop the database without active worker sessions.
+                connections.close_all()
 
         with ThreadPoolExecutor(max_workers=8) as workers:
             results = list(workers.map(submit, range(12)))
