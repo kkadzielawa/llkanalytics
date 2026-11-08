@@ -1,5 +1,3 @@
-{% load honeypot %}
-
 <section class="console-panel">
   <div class="console-header">
     <span class="console-dot"></span>
@@ -16,24 +14,28 @@
       {% endif %}
     {% endif %}
 
-    {% for field in form %}
+    {{ form.form_token }}
+    {{ form.company_website }}
+    {% for field in form.visible_fields %}
+      {% if field.name != 'company_website' %}
       {% if not user.is_authenticated or field.name != 'name' and field.name != 'email' or field.name == 'email' and not user.email %}
         <div class="field-group{% if field.errors %} has-error{% endif %}">
           <label for="{{ field.id_for_label }}">{{ field.label }}</label>
           {{ field }}
           {% if field.errors %}
-            <div class="field-error">{{ field.errors|join:", " }}</div>
+            <div class="field-error" id="{{ field.id_for_label }}_errors">{{ field.errors|join:", " }}</div>
           {% endif %}
         </div>
+      {% endif %}
       {% endif %}
     {% endfor %}
 
     {% if form.non_field_errors %}
-      <div class="field-error field-error-global">{{ form.non_field_errors|join:", " }}</div>
+      <div class="form-errors" role="alert">{{ form.non_field_errors|join:", " }}</div>
     {% endif %}
 
-    {% render_honeypot_field %}
     <p class="field-help">Comments are moderated before publication. Spam protection is enabled, and your name is required.</p>
+    <p class="field-help">Your email address will not be published. Comments can be up to 3,000 characters.</p>
     <button type="submit" class="button-primary">Add comment</button>
   </form>
 </section>

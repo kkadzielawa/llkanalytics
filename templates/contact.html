@@ -43,14 +43,14 @@
               <label for="{{ form.name.id_for_label }}">Name</label>
               {{ form.name }}
               {% if form.name.errors %}
-                <div class="field-error">{{ form.name.errors|join:", " }}</div>
+                <div class="field-error" id="id_name_errors">{{ form.name.errors|join:", " }}</div>
               {% endif %}
             </div>
             <div class="field-group{% if form.email.errors %} has-error{% endif %}">
               <label for="{{ form.email.id_for_label }}">Email</label>
               {{ form.email }}
               {% if form.email.errors %}
-                <div class="field-error">{{ form.email.errors|join:", " }}</div>
+                <div class="field-error" id="id_email_errors">{{ form.email.errors|join:", " }}</div>
               {% endif %}
             </div>
           </div>
@@ -60,7 +60,7 @@
             {{ form.service }}
             <p class="field-help">Choose the closest lane, or leave it general if you are still shaping the ask.</p>
             {% if form.service.errors %}
-              <div class="field-error">{{ form.service.errors|join:", " }}</div>
+              <div class="field-error" id="id_service_errors">{{ form.service.errors|join:", " }}</div>
             {% endif %}
           </div>
 
@@ -68,7 +68,7 @@
             <label for="{{ form.message.id_for_label }}">Message</label>
             {{ form.message }}
             {% if form.message.errors %}
-              <div class="field-error">{{ form.message.errors|join:", " }}</div>
+              <div class="field-error" id="id_message_errors">{{ form.message.errors|join:", " }}</div>
             {% endif %}
           </div>
 
@@ -76,6 +76,7 @@
           {{ form.form_token }}
 
           <p class="field-help">Spam protection is enabled. Please send one thoughtful inquiry at a time.</p>
+          <p class="field-help">Your email is used to reply to your inquiry. Please leave passwords and other sensitive information out of your message.</p>
 
           <div aria-live="polite" class="form-status">
             {% if form.errors %}
@@ -94,10 +95,17 @@
   <script>
     const contactForm = document.querySelector(".console-panel form");
     const contactFormButton = document.querySelector("[data-contact-submit]");
+    window.addEventListener("pageshow", () => {
+      if (contactFormButton) {
+        contactFormButton.disabled = false;
+        contactFormButton.textContent = "Send message";
+      }
+    });
     if (contactForm && contactFormButton) {
       contactForm.addEventListener("submit", () => {
         contactFormButton.disabled = true;
         contactFormButton.textContent = "Sending...";
+        contactForm.querySelector(".form-status").textContent = "Sending your message…";
       });
     }
   </script>

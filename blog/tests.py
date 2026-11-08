@@ -6,10 +6,11 @@ from django.urls import reverse
 from django.utils import timezone
 
 from blog.models import Comment, Post
+from blog.forms import CommentForm
 from courses.models import Category, Course
 
 
-@override_settings(SECURE_SSL_REDIRECT=False)
+@override_settings(SECURE_SSL_REDIRECT=False, COMMENT_FORM_MIN_SECONDS=0)
 class BlogModelAndViewTests(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -68,7 +69,7 @@ class BlogModelAndViewTests(TestCase):
         )
 
     def test_published_manager_only_returns_published_posts(self):
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             Post.published.values_list("slug", flat=True),
             ["published-analytics-post"],
             transform=lambda value: value,
@@ -109,6 +110,7 @@ class BlogModelAndViewTests(TestCase):
                 "name": "",
                 "email": "reader@example.com",
                 "body": "This comment has no name.",
+                "form_token": CommentForm().initial["form_token"],
                 "company_website": "",
             },
         )
@@ -124,11 +126,13 @@ class BlogModelAndViewTests(TestCase):
                 "name": "Thoughtful Reader",
                 "email": "reader3@example.com",
                 "body": "A useful question about this implementation.",
+                "form_token": CommentForm().initial["form_token"],
                 "company_website": "",
             },
         )
 
-        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, f"{self.published_post.get_absolute_url()}#comments", fetch_redirect_response=False)
+        response = self.client.get(self.published_post.get_absolute_url())
         pending = Comment.objects.get(name="Thoughtful Reader")
         self.assertFalse(pending.active)
         self.assertContains(response, "submitted for review")
@@ -144,6 +148,7 @@ class BlogModelAndViewTests(TestCase):
                 "name": "Promoter",
                 "email": "promoter@example.com",
                 "body": "Buy https://one.example https://two.example https://three.example",
+                "form_token": CommentForm().initial["form_token"],
                 "company_website": "",
             },
         )
@@ -161,11 +166,12 @@ class BlogModelAndViewTests(TestCase):
                 "name": "Spam Bot",
                 "email": "bot@example.com",
                 "body": "Buy spam links now.",
+                "form_token": CommentForm().initial["form_token"],
                 "company_website": "https://spam.example.com",
             },
         )
 
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(Comment.objects.count(), comment_count)
 
     def test_authenticated_user_without_email_can_comment_with_entered_email(self):
@@ -181,11 +187,13 @@ class BlogModelAndViewTests(TestCase):
             data={
                 "email": "reader@example.com",
                 "body": "This authenticated comment should appear.",
+                "form_token": CommentForm().initial["form_token"],
                 "company_website": "",
             },
         )
 
-        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, f"{self.published_post.get_absolute_url()}#comments", fetch_redirect_response=False)
+        response = self.client.get(self.published_post.get_absolute_url())
         self.assertContains(response, "Your comment has been submitted for review")
         self.assertContains(response, "Konrad Kadzielawa")
         self.assertNotContains(response, 'class="card-copy">This authenticated comment should appear.')
@@ -203,6 +211,37 @@ class BlogModelAndViewTests(TestCase):
         response = self.client.get(reverse("blog:post_list"), {"page": "invalid"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Published Analytics Post")
+
+    def test_comments_require_their_own_signed_token(self):
+        from pages.forms import ContactForm
+
+        for token in ["", ContactForm().initial["form_token"]]:
+            response = self.client.post(
+                reverse("blog:post_comment", args=[self.published_post.id]),
+                {"name": "Reader", "email": "reader@example.com", "body": "A thoughtful comment.", "form_token": token},
+            )
+            self.assertContains(response, "submit this form again")
+        self.assertFalse(Comment.objects.filter(name="Reader").exists())
+
+    def test_comment_length_is_bounded(self):
+        response = self.client.post(
+            reverse("blog:post_comment", args=[self.published_post.id]),
+            {"name": "Reader", "email": "reader@example.com", "body": "x" * 3001, "form_token": CommentForm().initial["form_token"]},
+        )
+        self.assertContains(response, "at most 3000 characters")
+        self.assertFalse(Comment.objects.filter(name="Reader").exists())
+
+    def test_comment_replay_and_ip_spoofing_are_blocked(self):
+        payload = {"name": "Reader", "email": "reader@example.com", "body": "A thoughtful comment.", "form_token": CommentForm().initial["form_token"]}
+        endpoint = reverse("blog:post_comment", args=[self.published_post.id])
+        self.assertEqual(self.client.post(endpoint, payload).status_code, 302)
+        self.assertEqual(self.client.post(endpoint, payload).status_code, 409)
+        for attempt in range(3):
+            payload["form_token"] = CommentForm().initial["form_token"]
+            payload["email"] = f"reader{attempt}@example.com"
+            response = self.client.post(endpoint, payload, HTTP_X_FORWARDED_FOR=f"198.51.100.{attempt}")
+        self.assertEqual(response.status_code, 429)
+        self.assertEqual(Comment.objects.filter(name="Reader").count(), 2)
 
     def test_blog_detail_hides_draft_posts(self):
         response = self.client.get(

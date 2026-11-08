@@ -1,12 +1,11 @@
 import re
-import time
 
 from django import forms
-from django.conf import settings
-from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
+from .antispam import ProtectedFormMixin
 
 
-class ContactForm(forms.Form):
+class ContactForm(ProtectedFormMixin, forms.Form):
+    token_salt = "contact-form"
     SERVICE_CHOICES = [
         ("", "Select a focus area"),
         ("analytics-consulting", "Analytics consulting"),
@@ -25,6 +24,7 @@ class ContactForm(forms.Form):
         ),
     )
     email = forms.EmailField(
+        max_length=254,
         widget=forms.EmailInput(
             attrs={
                 "autocomplete": "email",
@@ -64,31 +64,17 @@ class ContactForm(forms.Form):
     )
     form_token = forms.CharField(required=True, widget=forms.HiddenInput)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if not self.is_bound:
-            self.initial["form_token"] = TimestampSigner(
-                salt="contact-form"
-            ).sign(str(time.time()))
-
     def clean_website(self):
         value = self.cleaned_data["website"].strip()
         if value:
             raise forms.ValidationError("Spam detected.")
         return value
 
-    def clean_form_token(self):
-        value = self.cleaned_data["form_token"]
-        try:
-            issued_at = float(
-                TimestampSigner(salt="contact-form").unsign(value, max_age=60 * 60 * 24)
-            )
-        except (BadSignature, SignatureExpired, ValueError):
-            raise forms.ValidationError("Please reload the form and try again.")
-        minimum_seconds = float(getattr(settings, "CONTACT_FORM_MIN_SECONDS", 3))
-        if time.time() - issued_at < minimum_seconds:
-            raise forms.ValidationError("Please take a moment to complete the form.")
-        return value
+    def clean_name(self):
+        name = self.cleaned_data["name"]
+        if "\r" in name or "\n" in name:
+            raise forms.ValidationError("Please enter your name on a single line.")
+        return name
 
     def clean_message(self):
         message = self.cleaned_data["message"].strip()

@@ -36,6 +36,10 @@
                   src="{% if course.image %}{{ course.image.url }}{% else %}{% static 'img/sql101.jpg' %}{% endif %}"
                   alt="{{ course.name }}"
                   class="course-image"
+                  loading="lazy"
+                  decoding="async"
+                  width="640"
+                  height="360"
                 >
               </a>
               <div class="signal-card-header">
@@ -48,6 +52,7 @@
           {% empty %}
             <article class="signal-card">
               <h2>No courses are available in this category yet.</h2>
+              <p>Have a learning goal in mind? <a href="{% url 'pages:contact' %}">Ask about training</a>.</p>
             </article>
           {% endfor %}
         </div>

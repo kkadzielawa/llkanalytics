@@ -45,6 +45,45 @@ body {
 img {
     display: block;
     max-width: 100%;
+    height: auto;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+.skip-link {
+    position: fixed;
+    top: 0.5rem;
+    left: 0.5rem;
+    z-index: 100;
+    padding: 0.75rem 1rem;
+    background: var(--surface);
+    color: var(--ink);
+    border-radius: var(--radius-sm);
+    transform: translateY(-200%);
+}
+
+.skip-link:focus {
+    transform: translateY(0);
+    color: var(--ink);
+}
+
+[id] {
+    scroll-margin-top: 100px;
+}
+
+.hero-grid > *,
+.contact-layout > *,
+.courses-layout > *,
+.card-grid > * {
+    min-width: 0;
+}
+
+.rich-copy,
+.card-copy,
+.field-error {
+    overflow-wrap: anywhere;
 }
 
 a {
@@ -545,6 +584,8 @@ button[type="submit"]:hover {
 }
 
 .rich-copy table {
+    display: block;
+    overflow-x: auto;
     width: 100%;
     border-collapse: collapse;
     margin: 1.5rem 0;
@@ -694,6 +735,26 @@ textarea.comment-textarea {
     font-size: 0.92rem;
     font-weight: 700;
     letter-spacing: 0.01em;
+    max-width: 100%;
+    border-radius: var(--radius-sm);
+}
+
+button:disabled {
+    cursor: wait;
+    opacity: 0.7;
+    transform: none;
+}
+
+.service-cta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.service-cta p {
+    margin-bottom: 0;
 }
 
 .form-errors {
@@ -848,11 +909,21 @@ textarea.comment-textarea {
 }
 
 @media (max-width: 760px) {
+    .nav-shell {
+        flex-wrap: wrap;
+    }
+
     .nav-toggle {
         display: inline-flex;
     }
 
     .site-nav {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .site-nav.is-collapsible {
+        width: auto;
         position: absolute;
         top: 82px;
         right: 1rem;
@@ -878,6 +949,17 @@ textarea.comment-textarea {
 
     .cart-summary {
         text-align: left;
+    }
+}
+
+@media (max-width: 360px) {
+    .brand {
+        font-size: 0.85rem;
+        letter-spacing: 0.03em;
+    }
+
+    .nav-toggle {
+        padding: 0.65rem 0.85rem;
     }
 }
 

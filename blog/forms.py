@@ -1,10 +1,21 @@
 import re
 
 from django import forms
+from pages.antispam import ProtectedFormMixin
 from .models import Comment
 
 
-class CommentForm(forms.ModelForm):
+class CommentForm(ProtectedFormMixin, forms.ModelForm):
+    token_salt = "comment-form"
+    minimum_seconds_setting = "COMMENT_FORM_MIN_SECONDS"
+    form_token = forms.CharField(required=True, widget=forms.HiddenInput)
+    company_website = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            "class": "honeypot-field", "tabindex": "-1",
+            "autocomplete": "off", "aria-hidden": "true",
+        }),
+    )
     name = forms.CharField(
         required=True,
         max_length=80,
@@ -17,6 +28,7 @@ class CommentForm(forms.ModelForm):
     )
     email = forms.EmailField(
         required=True,
+        max_length=254,
         widget=forms.EmailInput(
             attrs={
                 "autocomplete": "email",
@@ -26,6 +38,8 @@ class CommentForm(forms.ModelForm):
     )
     body = forms.CharField(
         required=True,
+        min_length=10,
+        max_length=3000,
         label="Comment",
         widget=forms.Textarea(
             attrs={
@@ -39,6 +53,11 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ["name", "email", "body"]
+
+    def clean_company_website(self):
+        if self.cleaned_data["company_website"]:
+            raise forms.ValidationError("Spam detected.")
+        return ""
 
     def clean_body(self):
         body = self.cleaned_data["body"].strip()
