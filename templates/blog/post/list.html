@@ -9,15 +9,6 @@
 {% block twitter_title %}LLK Analytics Blog | AI Engineering and Machine Learning{% endblock %}
 {% block twitter_description %}Read articles about applied AI, AI engineering, classical machine learning, and analytics systems.{% endblock %}
 
-{% block extra_head %}
-  <script
-    type="text/javascript"
-    id="MathJax-script"
-    async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3.0.0/es5/tex-mml-chtml.js"
-  ></script>
-{% endblock %}
-
 {% block content %}
   <section class="page-section">
     <div class="container article-shell article-shell-wide">
@@ -35,14 +26,14 @@
             </div>
             <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
             <div class="card-copy">
-              {{ post.body|safe|truncatewords:30|linebreaks }}
+              {{ post.body|striptags|truncatewords:30|linebreaks }}
             </div>
             <a href="{{ post.get_absolute_url }}" class="text-link">Open article</a>
           </article>
         {% empty %}
           <article class="signal-card">
             <h2>No posts published yet.</h2>
-            <p>The blog route is live and ready for the first post from admin.</p>
+            <p>New articles are on the way. Explore courses or get in touch to discuss a topic.</p>
           </article>
         {% endfor %}
       </div>

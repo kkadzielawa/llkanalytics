@@ -25,6 +25,7 @@ services:
       DATABASE_URL: ${DATABASE_URL}
       MEDIA_ROOT: /app/media
       USE_X_FORWARDED_PROTO: "True"
+      TRUST_PROXY_CLIENT_IP: "True"
     depends_on:
       db:
         condition: service_healthy
